@@ -70,6 +70,7 @@ export interface Config {
     users: User;
     media: Media;
     'flat-media': FlatMedia;
+    'mock-pages': MockPage;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
     'payload-migrations': PayloadMigration;
@@ -79,6 +80,7 @@ export interface Config {
     users: UsersSelect<false> | UsersSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
     'flat-media': FlatMediaSelect<false> | FlatMediaSelect<true>;
+    'mock-pages': MockPagesSelect<false> | MockPagesSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
     'payload-migrations': PayloadMigrationsSelect<false> | PayloadMigrationsSelect<true>;
@@ -171,6 +173,29 @@ export interface FlatMedia {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "mock-pages".
+ */
+export interface MockPage {
+  id: string;
+  name: string;
+  userTypes?:
+    | {
+        name: string;
+        id?: string | null;
+      }[]
+    | null;
+  blocks?:
+    | {
+        name: string;
+        image: string | Media;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-locked-documents".
  */
 export interface PayloadLockedDocument {
@@ -187,6 +212,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'flat-media';
         value: string | FlatMedia;
+      } | null)
+    | ({
+        relationTo: 'mock-pages';
+        value: string | MockPage;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -275,6 +304,28 @@ export interface FlatMediaSelect<T extends boolean = true> {
     | {
         slug?: T;
         foregroundImage?: T;
+        id?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "mock-pages_select".
+ */
+export interface MockPagesSelect<T extends boolean = true> {
+  name?: T;
+  userTypes?:
+    | T
+    | {
+        name?: T;
+        id?: T;
+      };
+  blocks?:
+    | T
+    | {
+        name?: T;
+        image?: T;
         id?: T;
       };
   updatedAt?: T;
