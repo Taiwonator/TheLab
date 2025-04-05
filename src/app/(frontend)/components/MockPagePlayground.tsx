@@ -987,7 +987,7 @@ const MockPagePlayground: React.FC<MockPagePlaygroundProps> = ({
                                             ) % 10
                                           }
                                         >
-                                          {typeName}
+                                          {typeName.charAt(0)}
                                         </span>
                                       )
                                     })}
