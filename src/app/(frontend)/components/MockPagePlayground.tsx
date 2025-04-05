@@ -616,7 +616,7 @@ const MockPagePlayground: React.FC<MockPagePlaygroundProps> = ({
             ) : (
               // When no filters are active, use drag and drop
               <Fragment>
-                <DragDropContext onDragStart={() => alert('helllo')} onDragEnd={handleDragEnd}>
+                <DragDropContext onDragEnd={handleDragEnd}>
                   <Droppable
                     droppableId="stacked-images"
                     isDropDisabled={false}

@@ -1274,7 +1274,7 @@ input:checked + .toggle-slider:before {
 /* Content actions */
 .content-actions {
   display: flex;
-  justify-content: flex-end;
+  justify-content: center;
   margin-bottom: 20px;
 }
 
