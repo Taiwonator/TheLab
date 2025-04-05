@@ -649,7 +649,7 @@ const MockPagePlayground: React.FC<MockPagePlaygroundProps> = ({
                                     ) % 10
                                   }
                                 >
-                                  {typeName}
+                                  {typeName.charAt(0)}
                                 </span>
                               )
                             })}
@@ -738,26 +738,35 @@ const MockPagePlayground: React.FC<MockPagePlaygroundProps> = ({
                               </div>
                             </div>
                             {block.userTypes && block.userTypes.length > 0 && (
-                              <div className="user-type-tags">
+                              <div
+                                className={`user-type-tags ${block.userTypes && block.userTypes.length > 1 ? 'has-multiple' : ''}`}
+                              >
                                 {block.userTypes.map((userType, idx) => {
                                   const typeName =
                                     typeof userType === 'string' ? userType : userType.name
                                   const typeId =
                                     typeof userType === 'string' ? `type-${idx}` : userType.id
+                                  const tagIndex =
+                                    availableUserTypes.findIndex((ut) =>
+                                      typeof userType === 'string'
+                                        ? ut.name === userType
+                                        : ut.id === userType.id,
+                                    ) % 10
 
                                   return (
                                     <span
                                       key={typeId}
                                       className="user-type-tag"
-                                      data-tag-index={
-                                        availableUserTypes.findIndex((ut) =>
-                                          typeof userType === 'string'
-                                            ? ut.name === userType
-                                            : ut.id === userType.id,
-                                        ) % 10
+                                      data-tag-index={tagIndex}
+                                      data-count={
+                                        block.userTypes &&
+                                        idx === block.userTypes.length - 1 &&
+                                        block.userTypes.length > 1
+                                          ? block.userTypes.length
+                                          : ''
                                       }
                                     >
-                                      {typeName}
+                                      {typeName.charAt(0)}
                                     </span>
                                   )
                                 })}
