@@ -11,8 +11,9 @@ export default function SocketTest() {
     // Initialize the socket connection
     const socketInit = async () => {
       try {
-        // Connect to the standalone Socket.io server
-        const socket = io('http://localhost:3001', {
+        // Connect to the Socket.io server using the environment variable
+        const socketServerUrl = process.env.NEXT_PUBLIC_SOCKET_SERVER_URL || 'http://localhost:3001'
+        const socket = io(socketServerUrl, {
           reconnectionAttempts: 5,
           reconnectionDelay: 1000,
           transports: ['websocket', 'polling'],

@@ -16,8 +16,9 @@ export function useSocket(pageId: string) {
     // Initialize the socket connection
     const socketInit = async () => {
       try {
-        // Connect to the standalone Socket.io server
-        socketInstance = io('http://localhost:3001', {
+        // Connect to the Socket.io server using the environment variable
+        const socketServerUrl = process.env.NEXT_PUBLIC_SOCKET_SERVER_URL || 'http://localhost:3001'
+        socketInstance = io(socketServerUrl, {
           reconnectionAttempts: 5,
           reconnectionDelay: 1000,
           transports: ['websocket', 'polling'],

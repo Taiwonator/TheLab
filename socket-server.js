@@ -2,6 +2,10 @@ import express from 'express'
 import { createServer } from 'http'
 import { Server } from 'socket.io'
 import cors from 'cors'
+import dotenv from 'dotenv'
+
+// Load environment variables
+dotenv.config({ path: '.env.local' })
 
 const app = express()
 app.use(cors())
@@ -64,7 +68,7 @@ io.on('connection', (socket) => {
 })
 
 // Start the server
-const PORT = process.env.PORT || 3001
+const PORT = process.env.SOCKET_SERVER_PORT || 3001
 server.listen(PORT, () => {
   console.log(`Socket.io server running on port ${PORT}`)
 })
