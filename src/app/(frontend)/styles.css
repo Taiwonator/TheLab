@@ -1271,6 +1271,12 @@ input:checked + .toggle-slider:before {
   gap: 20px;
 }
 
+.stacked-images ul {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
 /* Content actions */
 .content-actions {
   display: flex;

@@ -1,6 +1,8 @@
 'use client'
 
-import React, { useEffect, useState, Fragment } from 'react'
+import { createSwapy } from 'swapy'
+import { Reorder } from 'motion/react'
+import React, { useEffect, useState, Fragment, useRef } from 'react'
 import { DragDropContext, Droppable, Draggable, DropResult } from 'react-beautiful-dnd'
 import BlockForm from './BlockForm'
 import BlockEditForm from './BlockEditForm'
@@ -533,6 +535,8 @@ const MockPagePlayground: React.FC<MockPagePlaygroundProps> = ({
                   const imageAlt =
                     typeof block.image === 'string' ? block.name : block.image?.alt || block.name
 
+                  console.log('block: ', block)
+
                   return imageUrl ? (
                     <div key={block.id || `block-${index}`} className="stacked-image-container">
                       <div className="image-label">
@@ -616,143 +620,112 @@ const MockPagePlayground: React.FC<MockPagePlaygroundProps> = ({
             ) : (
               // When no filters are active, use drag and drop
               <Fragment>
-                <DragDropContext onDragEnd={handleDragEnd}>
-                  <Droppable
-                    droppableId="stacked-images"
-                    isDropDisabled={false}
-                    isCombineEnabled={false}
-                    ignoreContainerClipping={false}
-                  >
-                    {(provided) => (
-                      <div
-                        className="stacked-images"
-                        {...provided.droppableProps}
-                        ref={provided.innerRef}
-                      >
-                        {filteredBlocks.map((block, index) => {
-                          const imageUrl =
-                            typeof block.image === 'string' ? block.image : block.image?.url
+                <div className="stacked-images">
+                  <Reorder.Group axis="y" values={blocks} onReorder={setBlocks}>
+                    {filteredBlocks.map((block, index) => {
+                      const imageUrl =
+                        typeof block.image === 'string' ? block.image : block.image?.url
 
-                          const imageAlt =
-                            typeof block.image === 'string'
-                              ? block.name
-                              : block.image?.alt || block.name
+                      const imageAlt =
+                        typeof block.image === 'string'
+                          ? block.name
+                          : block.image?.alt || block.name
 
-                          const draggableId = String(block.id || `block-${index}`)
-                          console.log('index: ', index, block, draggableId)
-
-                          console.log('selectedUserTypes: ', selectedUserTypes.length > 0)
-
-                          return imageUrl ? (
-                            <Draggable
-                              key={draggableId}
-                              draggableId={draggableId}
-                              index={index}
-                              isDragDisabled={false}
-                            >
-                              {(provided, snapshot) => (
-                                <div
-                                  className={`stacked-image-container ${snapshot.isDragging ? 'dragging' : ''}`}
-                                  ref={provided.innerRef}
-                                  {...provided.draggableProps}
-                                  {...provided.dragHandleProps}
+                      return imageUrl ? (
+                        <Reorder.Item key={block.id} value={block}>
+                          <div className={`stacked-image-container`}>
+                            <div className="image-label">
+                              <div className="label-content">
+                                <span className="drag-handle">☰</span>
+                                {block.name}
+                              </div>
+                              <div className="block-actions">
+                                <button
+                                  className="edit-button block-edit-button"
+                                  onClick={(e) => {
+                                    e.stopPropagation()
+                                    setEditingBlock(block)
+                                  }}
                                 >
-                                  <div className="image-label">
-                                    <div className="label-content">
-                                      <span className="drag-handle">☰</span>
-                                      {block.name}
-                                    </div>
-                                    <div className="block-actions">
-                                      <button
-                                        className="edit-button block-edit-button"
-                                        onClick={(e) => {
-                                          e.stopPropagation()
-                                          setEditingBlock(block)
-                                        }}
-                                      >
-                                        Edit
-                                      </button>
-                                      <button
-                                        className="delete-button block-delete-button"
-                                        onClick={(e) => {
-                                          e.stopPropagation()
-                                          setDeletingBlock(block)
-                                        }}
-                                      >
-                                        <svg
-                                          xmlns="http://www.w3.org/2000/svg"
-                                          viewBox="0 0 24 24"
-                                          width="16"
-                                          height="16"
-                                          fill="none"
-                                          stroke="currentColor"
-                                          strokeWidth="2"
-                                          strokeLinecap="round"
-                                          strokeLinejoin="round"
-                                        >
-                                          <polyline points="3 6 5 6 21 6"></polyline>
-                                          <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-                                        </svg>
-                                      </button>
-                                    </div>
-                                  </div>
-                                  {block.userTypes && block.userTypes.length > 0 && (
-                                    <div className="user-type-tags">
-                                      {block.userTypes.map((userType, idx) => {
-                                        const typeName =
-                                          typeof userType === 'string' ? userType : userType.name
-                                        const typeId =
-                                          typeof userType === 'string' ? `type-${idx}` : userType.id
-
-                                        return (
-                                          <span
-                                            key={typeId}
-                                            className="user-type-tag"
-                                            data-tag-index={
-                                              availableUserTypes.findIndex((ut) =>
-                                                typeof userType === 'string'
-                                                  ? ut.name === userType
-                                                  : ut.id === userType.id,
-                                              ) % 10
-                                            }
-                                          >
-                                            {typeName}
-                                          </span>
-                                        )
-                                      })}
-                                    </div>
-                                  )}
-                                  <div
-                                    className={`image-container ${loadingImages[block.id || `block-${index}`] ? 'loading' : ''}`}
+                                  Edit
+                                </button>
+                                <button
+                                  className="delete-button block-delete-button"
+                                  onClick={(e) => {
+                                    e.stopPropagation()
+                                    setDeletingBlock(block)
+                                  }}
+                                >
+                                  <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    viewBox="0 0 24 24"
+                                    width="16"
+                                    height="16"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    strokeWidth="2"
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
                                   >
-                                    <img
-                                      src={imageUrl}
-                                      alt={imageAlt}
-                                      className="full-width-image"
-                                      onLoad={() => {
-                                        setLoadingImages((prev) => ({
-                                          ...prev,
-                                          [block.id || `block-${index}`]: false,
-                                        }))
-                                      }}
-                                      onError={() => {
-                                        setLoadingImages((prev) => ({
-                                          ...prev,
-                                          [block.id || `block-${index}`]: false,
-                                        }))
-                                      }}
-                                    />
-                                  </div>
-                                </div>
-                              )}
-                            </Draggable>
-                          ) : null
-                        })}
-                        {provided.placeholder}
-                      </div>
-                    )}
-                  </Droppable>
-                </DragDropContext>
+                                    <polyline points="3 6 5 6 21 6"></polyline>
+                                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                                  </svg>
+                                </button>
+                              </div>
+                            </div>
+                            {block.userTypes && block.userTypes.length > 0 && (
+                              <div className="user-type-tags">
+                                {block.userTypes.map((userType, idx) => {
+                                  const typeName =
+                                    typeof userType === 'string' ? userType : userType.name
+                                  const typeId =
+                                    typeof userType === 'string' ? `type-${idx}` : userType.id
+
+                                  return (
+                                    <span
+                                      key={typeId}
+                                      className="user-type-tag"
+                                      data-tag-index={
+                                        availableUserTypes.findIndex((ut) =>
+                                          typeof userType === 'string'
+                                            ? ut.name === userType
+                                            : ut.id === userType.id,
+                                        ) % 10
+                                      }
+                                    >
+                                      {typeName}
+                                    </span>
+                                  )
+                                })}
+                              </div>
+                            )}
+                            <div
+                              className={`image-container ${loadingImages[block.id || `block-${index}`] ? 'loading' : ''}`}
+                            >
+                              <img
+                                src={imageUrl}
+                                alt={imageAlt}
+                                className="full-width-image"
+                                onLoad={() => {
+                                  setLoadingImages((prev) => ({
+                                    ...prev,
+                                    [block.id || `block-${index}`]: false,
+                                  }))
+                                }}
+                                onError={() => {
+                                  setLoadingImages((prev) => ({
+                                    ...prev,
+                                    [block.id || `block-${index}`]: false,
+                                  }))
+                                }}
+                              />
+                            </div>
+                          </div>
+                        </Reorder.Item>
+                      ) : null
+                    })}
+                  </Reorder.Group>
+                </div>
 
                 <div className="content-actions bottom-actions">
                   <button className="create-button" onClick={() => setShowBlockForm(true)}>

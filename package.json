@@ -23,12 +23,14 @@
     "axios": "^1.8.4",
     "cross-env": "^7.0.3",
     "graphql": "^16.8.1",
+    "motion": "^12.6.3",
     "next": "15.2.2",
     "payload": "latest",
     "react": "19.0.0",
     "react-beautiful-dnd": "^13.1.1",
     "react-dom": "19.0.0",
-    "sharp": "^0.32.6"
+    "sharp": "^0.32.6",
+    "swapy": "^1.0.5"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.2.0",
