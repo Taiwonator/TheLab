@@ -71,6 +71,7 @@ export interface Config {
     media: Media;
     'flat-media': FlatMedia;
     'mock-pages': MockPage;
+    'mock-page-users': MockPageUser;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
     'payload-migrations': PayloadMigration;
@@ -81,6 +82,7 @@ export interface Config {
     media: MediaSelect<false> | MediaSelect<true>;
     'flat-media': FlatMediaSelect<false> | FlatMediaSelect<true>;
     'mock-pages': MockPagesSelect<false> | MockPagesSelect<true>;
+    'mock-page-users': MockPageUsersSelect<false> | MockPageUsersSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
     'payload-migrations': PayloadMigrationsSelect<false> | PayloadMigrationsSelect<true>;
@@ -178,19 +180,24 @@ export interface FlatMedia {
 export interface MockPage {
   id: string;
   name: string;
-  userTypes?:
-    | {
-        name: string;
-        id?: string | null;
-      }[]
-    | null;
   blocks?:
     | {
         name: string;
         image: string | Media;
+        userTypes?: (string | MockPageUser)[] | null;
         id?: string | null;
       }[]
     | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "mock-page-users".
+ */
+export interface MockPageUser {
+  id: string;
+  name: string;
   updatedAt: string;
   createdAt: string;
 }
@@ -216,6 +223,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'mock-pages';
         value: string | MockPage;
+      } | null)
+    | ({
+        relationTo: 'mock-page-users';
+        value: string | MockPageUser;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -315,19 +326,23 @@ export interface FlatMediaSelect<T extends boolean = true> {
  */
 export interface MockPagesSelect<T extends boolean = true> {
   name?: T;
-  userTypes?:
-    | T
-    | {
-        name?: T;
-        id?: T;
-      };
   blocks?:
     | T
     | {
         name?: T;
         image?: T;
+        userTypes?: T;
         id?: T;
       };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "mock-page-users_select".
+ */
+export interface MockPageUsersSelect<T extends boolean = true> {
+  name?: T;
   updatedAt?: T;
   createdAt?: T;
 }

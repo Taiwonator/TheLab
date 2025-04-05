@@ -12,17 +12,6 @@ export const MockPage: CollectionConfig = {
       required: true,
     },
     {
-      name: 'userTypes',
-      type: 'array',
-      fields: [
-        {
-          name: 'name',
-          type: 'text',
-          required: true,
-        },
-      ],
-    },
-    {
       name: 'blocks',
       type: 'array',
       fields: [
@@ -36,6 +25,12 @@ export const MockPage: CollectionConfig = {
           type: 'upload',
           relationTo: 'media',
           required: true,
+        },
+        {
+          name: 'userTypes',
+          type: 'relationship',
+          relationTo: 'mock-page-users',
+          hasMany: true,
         },
       ],
     },
