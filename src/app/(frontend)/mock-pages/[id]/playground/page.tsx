@@ -6,14 +6,12 @@ import config from '@/payload.config'
 import { MockPage } from '@/payload-types'
 import MockPagePlayground from '../../../components/MockPagePlayground'
 
-interface PlaygroundPageProps {
-  params: {
-    id: string
-  }
+export type PageProps = {
+  params: Promise<{ id: string }>
 }
 
-export default async function PlaygroundPage({ params }: PlaygroundPageProps) {
-  const { id } = params
+export default async function PlaygroundPage({ params }: PageProps) {
+  const { id } = await params
 
   const payloadConfig = await config
   const payload = await getPayload({ config: payloadConfig })

@@ -120,7 +120,7 @@ const MagicLinkGenerator: React.FC<MagicLinkGeneratorProps> = ({ pageId }) => {
                   key={type.id}
                   type="button"
                   className={`user-type-option ${selectedUserTypes.includes(type.id) ? 'selected' : ''}`}
-                  data-tag-index={type.color || 0}
+                  data-tag-index={0}
                   onClick={() => toggleUserType(type.id)}
                 >
                   {type.name}

@@ -7,7 +7,12 @@ SOCKET_PID=$!
 
 # Start the Next.js application
 echo "Starting Next.js application..."
-npm run start
+HOSTNAME="0.0.0.0" node server.js &
+NEXT_PID=$!
 
-# When Next.js exits, kill the Socket.io server
+# Handle termination signals
+trap "kill $SOCKET_PID $NEXT_PID; exit" SIGINT SIGTERM
+
+# Keep the script running
+wait $NEXT_PID
 kill $SOCKET_PID

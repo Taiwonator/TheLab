@@ -8,14 +8,12 @@ import MockPageBlocksClient from '../../components/MockPageBlocksClient'
 import MockPageNameEditor from '../../components/MockPageNameEditor'
 import MagicLinkGenerator from '../../components/MagicLinkGenerator'
 
-interface MockPageDetailProps {
-  params: {
-    id: string
-  }
+export type PageProps = {
+  params: Promise<{ id: string }>
 }
 
-export default async function MockPageDetail({ params }: MockPageDetailProps) {
-  const { id } = params
+export default async function MockPageDetail({ params }: PageProps) {
+  const { id } = await params
   const payloadConfig = await config
   const payload = await getPayload({ config: payloadConfig })
 

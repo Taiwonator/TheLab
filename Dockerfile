@@ -13,7 +13,7 @@ WORKDIR /app
 COPY package.json yarn.lock* package-lock.json* pnpm-lock.yaml* ./
 RUN \
   if [ -f yarn.lock ]; then yarn --frozen-lockfile; \
-  elif [ -f package-lock.json ]; then npm ci; \
+  elif [ -f package-lock.json ]; then npm install && npm ci; \
   elif [ -f pnpm-lock.yaml ]; then corepack enable pnpm && pnpm i --frozen-lockfile; \
   else echo "Lockfile not found." && exit 1; \
   fi
@@ -60,12 +60,22 @@ RUN chown nextjs:nodejs .next
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 
+# Copy Socket.io server files
+COPY --from=builder --chown=nextjs:nodejs /app/socket-server.js ./
+COPY --from=builder --chown=nextjs:nodejs /app/start-production.sh ./
+
+# Make the start script executable
+RUN chmod +x ./start-production.sh
+
 USER nextjs
 
+# Expose ports for Next.js and Socket.io
 EXPOSE 3000
+EXPOSE 3001
 
 ENV PORT 3000
+ENV SOCKET_SERVER_PORT 3001
+ENV NEXT_PUBLIC_SOCKET_SERVER_URL=""
 
-# server.js is created by next build from the standalone output
-# https://nextjs.org/docs/pages/api-reference/next-config-js/output
-CMD HOSTNAME="0.0.0.0" node server.js
+# Start both the Next.js app and Socket.io server
+CMD ["./start-production.sh"]

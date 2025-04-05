@@ -32,12 +32,10 @@
     "next": "15.2.2",
     "payload": "latest",
     "react": "19.0.0",
-    "react-beautiful-dnd": "^13.1.1",
     "react-dom": "19.0.0",
     "sharp": "^0.32.6",
     "socket.io": "^4.8.1",
-    "socket.io-client": "^4.8.1",
-    "swapy": "^1.0.5"
+    "socket.io-client": "^4.8.1"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.2.0",
