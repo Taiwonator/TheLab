@@ -1495,7 +1495,6 @@ input:checked + .toggle-slider:before {
   width: 100%;
   min-height: 100px;
   overflow: hidden;
-  border-radius: 4px;
   background-color: rgb(30, 30, 30);
 }
 
@@ -1517,22 +1516,19 @@ input:checked + .toggle-slider:before {
   width: 100%;
   height: auto;
   display: block;
-  border-radius: 4px;
 }
 
 .prototype-image-container {
   position: relative;
   width: 100%;
-  min-height: 100px;
+  /* min-height: 100px; */
   overflow: hidden;
-  border-radius: 4px;
 }
 
 .prototype-image {
   width: 100%;
   height: auto;
   display: block;
-  border-radius: 4px;
 }
 
 .no-blocks-message {
