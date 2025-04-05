@@ -3,6 +3,7 @@
 import { createSwapy } from 'swapy'
 import { Reorder } from 'motion/react'
 import React, { useEffect, useState, Fragment, useRef } from 'react'
+import { useSocket } from '../hooks/useSocket'
 import { DragDropContext, Droppable, Draggable, DropResult } from 'react-beautiful-dnd'
 import BlockForm from './BlockForm'
 import BlockEditForm from './BlockEditForm'
@@ -28,6 +29,18 @@ const MockPagePlayground: React.FC<MockPagePlaygroundProps> = ({
   pageName,
   pageId,
 }) => {
+  // Initialize socket connection
+  const { socket, isConnected, emitBlockUpdate, emitOrderChange } = useSocket(pageId)
+
+  // Log connection status
+  useEffect(() => {
+    if (isConnected) {
+      console.log('Connected to Socket.io server')
+    } else {
+      console.log('Disconnected from Socket.io server')
+    }
+  }, [isConnected])
+
   // State to manage the order of blocks
   const [blocks, setBlocks] = useState<Block[]>(initialBlocks)
   // State for filtering by user types (multiple selection)
@@ -237,6 +250,9 @@ const MockPagePlayground: React.FC<MockPagePlaygroundProps> = ({
       setSaveMessage('Changes saved successfully!')
       console.log('Save successful:', result)
 
+      // Emit the order change to other clients
+      emitOrderChange({ blocks })
+
       // Clear success message after 3 seconds
       setTimeout(() => {
         setSaveMessage('')
@@ -288,7 +304,11 @@ const MockPagePlayground: React.FC<MockPagePlaygroundProps> = ({
       }
 
       // Add the new block to the blocks array
-      setBlocks((prev) => [...prev, result.block])
+      const updatedBlocks = [...blocks, result.block]
+      setBlocks(updatedBlocks)
+
+      // Emit the update to other clients
+      emitBlockUpdate({ blocks: updatedBlocks })
 
       // Close the form and show success message
       setShowBlockForm(false)
@@ -332,7 +352,13 @@ const MockPagePlayground: React.FC<MockPagePlaygroundProps> = ({
       }
 
       // Update the block in the blocks array
-      setBlocks((prev) => prev.map((block) => (block.id === blockData.id ? result.block : block)))
+      const updatedBlocks = blocks.map((block) =>
+        block.id === blockData.id ? result.block : block,
+      )
+      setBlocks(updatedBlocks)
+
+      // Emit the update to other clients
+      emitBlockUpdate({ blocks: updatedBlocks })
 
       // Close the form and show success message
       setEditingBlock(null)
@@ -374,7 +400,11 @@ const MockPagePlayground: React.FC<MockPagePlaygroundProps> = ({
       }
 
       // Remove the block from the blocks array
-      setBlocks((prev) => prev.filter((block) => block.id !== blockId))
+      const updatedBlocks = blocks.filter((block) => block.id !== blockId)
+      setBlocks(updatedBlocks)
+
+      // Emit the update to other clients
+      emitBlockUpdate({ blocks: updatedBlocks })
 
       // Close the confirmation modal and show success message
       setDeletingBlock(null)
@@ -392,6 +422,40 @@ const MockPagePlayground: React.FC<MockPagePlaygroundProps> = ({
       setIsDeleting(false)
     }
   }
+
+  // Listen for real-time updates from other clients
+  useEffect(() => {
+    if (socket) {
+      // Listen for block updates
+      socket.on('blocks-updated', (data) => {
+        console.log('Received block update:', data)
+        if (data.blocks) {
+          setBlocks(data.blocks)
+          setSaveMessage('Changes made by another user have been applied')
+          setTimeout(() => {
+            setSaveMessage('')
+          }, 3000)
+        }
+      })
+
+      // Listen for order updates
+      socket.on('order-updated', (data) => {
+        console.log('Received order update:', data)
+        if (data.blocks) {
+          setBlocks(data.blocks)
+          setSaveMessage('Block order updated by another user')
+          setTimeout(() => {
+            setSaveMessage('')
+          }, 3000)
+        }
+      })
+
+      return () => {
+        socket.off('blocks-updated')
+        socket.off('order-updated')
+      }
+    }
+  }, [socket])
 
   // Process URL parameters
   useEffect(() => {

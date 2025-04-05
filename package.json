@@ -6,13 +6,14 @@
   "type": "module",
   "scripts": {
     "build": "cross-env NODE_OPTIONS=--no-deprecation next build",
-    "dev": "cross-env NODE_OPTIONS=--no-deprecation next dev",
+    "dev": "cross-env NODE_OPTIONS=--no-deprecation node server.js",
+    "dev:next": "cross-env NODE_OPTIONS=--no-deprecation next dev",
     "devsafe": "rm -rf .next && cross-env NODE_OPTIONS=--no-deprecation next dev",
     "generate:importmap": "cross-env NODE_OPTIONS=--no-deprecation payload generate:importmap",
     "generate:types": "cross-env NODE_OPTIONS=--no-deprecation payload generate:types",
     "lint": "cross-env NODE_OPTIONS=--no-deprecation next lint",
     "payload": "cross-env NODE_OPTIONS=--no-deprecation payload",
-    "start": "cross-env NODE_OPTIONS=--no-deprecation next start"
+    "start": "cross-env NODE_OPTIONS=--no-deprecation node server.js"
   },
   "dependencies": {
     "@payloadcms/db-mongodb": "latest",
@@ -21,7 +22,9 @@
     "@payloadcms/richtext-lexical": "latest",
     "@types/react-beautiful-dnd": "^13.1.8",
     "axios": "^1.8.4",
+    "cors": "^2.8.5",
     "cross-env": "^7.0.3",
+    "express": "^5.1.0",
     "graphql": "^16.8.1",
     "motion": "^12.6.3",
     "next": "15.2.2",
@@ -30,6 +33,8 @@
     "react-beautiful-dnd": "^13.1.1",
     "react-dom": "19.0.0",
     "sharp": "^0.32.6",
+    "socket.io": "^4.8.1",
+    "socket.io-client": "^4.8.1",
     "swapy": "^1.0.5"
   },
   "devDependencies": {
