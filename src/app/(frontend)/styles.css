@@ -1449,7 +1449,7 @@ input:checked + .toggle-slider:before {
   top: 15px;
   right: 15px;
   display: flex;
-  flex-direction: row-reverse; /* Display tags in reverse order */
+  /* flex-direction: row-reverse; Display tags in reverse order */
   z-index: 10;
   max-width: 150px;
 }
