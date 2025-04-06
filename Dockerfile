@@ -14,22 +14,19 @@ WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
-# Next.js collects completely anonymous telemetry data about general usage.
-# Learn more here: https://nextjs.org/telemetry
-# Uncomment the following line in case you want to disable telemetry during the build.
+# Next.js telemetry
 ENV NEXT_TELEMETRY_DISABLED 1
 ENV NODE_ENV production
 
-# Bring other ENV variables from build stage
-ARG PAYLOAD_SECRET
-ENV PAYLOAD_SECRET=$PAYLOAD_SECRET
-ARG NEXT_PUBLIC_SOCKET_SERVER_URL
-ENV NEXT_PUBLIC_SOCKET_SERVER_URL=$NEXT_PUBLIC_SOCKET_SERVER_URL
+# Build arguments
 ARG MONGODB_URI
+ARG PAYLOAD_SECRET
+ARG NEXT_PUBLIC_SOCKET_SERVER_URL
+
+# Set environment variables
 ENV MONGODB_URI=$MONGODB_URI
-
-
-RUN echo "hello ${PAYLOAD_SECRET}!"
+ENV PAYLOAD_SECRET=$PAYLOAD_SECRET
+ENV NEXT_PUBLIC_SOCKET_SERVER_URL=$NEXT_PUBLIC_SOCKET_SERVER_URL
 
 RUN npm run build
 
@@ -45,13 +42,16 @@ RUN adduser --system --uid 1001 nextjs
 # RUN mkdir -p /app/media && chmod 777 /app/media
 
 # Copy built application
-COPY --from=builder --chown=nextjs:nodejs /app/.next ./.next
-COPY --from=builder --chown=nextjs:nodejs /app/node_modules ./node_modules
-COPY --from=builder --chown=nextjs:nodejs /app/package.json ./package.json
-COPY --from=builder --chown=nextjs:nodejs /app/server.js ./server.js
-# COPY --from=builder --chown=nextjs:nodejs /app/media ./media FOR LOCAL
+COPY --from=builder /app/package.json ./package.json
+COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/.next ./.next
+COPY --from=builder /app/src ./src
+COPY --from=builder /app/server.js ./server.js
 
-# Set proper permissions
+# Set ownership for all copied files
+RUN chown -R nextjs:nodejs .
+
+# Switch to non-root user
 USER nextjs
 
 # Expose the port

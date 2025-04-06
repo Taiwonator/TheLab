@@ -31,8 +31,8 @@ services:
       - NODE_ENV=production
       - MONGODB_URI=${MONGODB_URI:-mongodb://admin:password@mongo:27017/mockpages?authSource=admin}
       - PAYLOAD_SECRET=${PAYLOAD_SECRET:-your-secret-key}
-      - PAYLOAD_PUBLIC_SERVER_URL=${PAYLOAD_PUBLIC_SERVER_URL:-http://localhost:3000}
-      - NEXT_PUBLIC_SERVER_URL=${NEXT_PUBLIC_SERVER_URL:-http://localhost:3000}
+      # - PAYLOAD_PUBLIC_SERVER_URL=${PAYLOAD_PUBLIC_SERVER_URL:-http://localhost:3000}
+      # - NEXT_PUBLIC_SERVER_URL=${NEXT_PUBLIC_SERVER_URL:-http://localhost:3000}
       - NEXT_PUBLIC_SOCKET_SERVER_URL=${NEXT_PUBLIC_SOCKET_SERVER_URL:-http://localhost:3001}
     volumes:
       - payload-media:/app/media
