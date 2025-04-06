@@ -42,7 +42,7 @@ RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 
 # Create media directory and set permissions
-RUN mkdir -p /app/media && chmod 777 /app/media
+# RUN mkdir -p /app/media && chmod 777 /app/media
 
 # Copy built application
 COPY --from=builder --chown=nextjs:nodejs /app/.next ./.next
