@@ -22,7 +22,7 @@ ENV NODE_ENV production
 
 # Bring other ENV variables from build stage
 ARG PAYLOAD_SECRET
-ENV PAYLOAD_SECRET=${PAYLOAD_SECRET}
+ENV PAYLOAD_SECRET=$PAYLOAD_SECRET
 
 RUN npm run build
 
