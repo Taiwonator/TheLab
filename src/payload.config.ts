@@ -33,7 +33,7 @@ export default buildConfig({
     outputFile: path.resolve(dirname, 'payload-types.ts'),
   },
   db: mongooseAdapter({
-    url: process.env.MONGODB_URI || '',
+    url: process.env.NF_MONGO_PAYLOAD_MONGO_SRV || process.env.MONGODB_URI || '',
   }),
   sharp,
   plugins: [
