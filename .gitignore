@@ -19,6 +19,10 @@
 # production
 /build
 
+# Docker
+.docker-data
+.docker-compose.override.yml
+
 # misc
 .DS_Store
 *.pem

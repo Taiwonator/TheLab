@@ -5,7 +5,7 @@ import cors from 'cors'
 import dotenv from 'dotenv'
 
 // Load environment variables
-const envFile = process.env.NODE_ENV === 'production' ? '.env.production' : '.env.local'
+const envFile = process.env.NODE_ENV === 'production' ? '.env.production' : '.env'
 dotenv.config({ path: envFile })
 
 const app = express()

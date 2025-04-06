@@ -1,43 +1,65 @@
-version: '3'
+version: '3.8'
 
 services:
-  payload:
-    image: node:18-alpine
-    ports:
-      - '3000:3000'
-    volumes:
-      - .:/home/node/app
-      - node_modules:/home/node/app/node_modules
-    working_dir: /home/node/app/
-    command: sh -c "corepack enable && corepack prepare pnpm@latest --activate && pnpm install && pnpm dev"
-    depends_on:
-      - mongo
-      # - postgres
-    env_file:
-      - .env
-
-  # Ensure your DATABASE_URI uses 'mongo' as the hostname ie. mongodb://mongo/my-db-name
+  # MongoDB service
   mongo:
     image: mongo:latest
+    container_name: mongo
+    restart: always
     ports:
       - '27017:27017'
-    command:
-      - --storageEngine=wiredTiger
     volumes:
-      - data:/data/db
-    logging:
-      driver: none
+      - mongo-data:/data/db
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=${MONGO_USERNAME:-admin}
+      - MONGO_INITDB_ROOT_PASSWORD=${MONGO_PASSWORD:-password}
+    networks:
+      - app-network
 
-  # Uncomment the following to use postgres
-  # postgres:
-  #   restart: always
-  #   image: postgres:latest
-  #   volumes:
-  #     - pgdata:/var/lib/postgresql/data
-  #   ports:
-  #     - "5432:5432"
+  # Next.js application service
+  nextjs:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: nextjs
+    restart: always
+    ports:
+      - '3000:3000'
+    depends_on:
+      - mongo
+    environment:
+      - NODE_ENV=production
+      - MONGODB_URI=${MONGODB_URI:-mongodb://admin:password@mongo:27017/mockpages?authSource=admin}
+      - PAYLOAD_SECRET=${PAYLOAD_SECRET:-your-secret-key}
+      - PAYLOAD_PUBLIC_SERVER_URL=${PAYLOAD_PUBLIC_SERVER_URL:-http://localhost:3000}
+      - NEXT_PUBLIC_SERVER_URL=${NEXT_PUBLIC_SERVER_URL:-http://localhost:3000}
+      - NEXT_PUBLIC_SOCKET_SERVER_URL=${NEXT_PUBLIC_SOCKET_SERVER_URL:-http://localhost:3001}
+    networks:
+      - app-network
+    command: node server.js
+
+  # Socket.io server service
+  socketio:
+    build:
+      context: .
+      dockerfile: Dockerfile.socket
+    container_name: socketio
+    restart: always
+    ports:
+      - '3001:3001'
+    depends_on:
+      - nextjs
+    environment:
+      - NODE_ENV=production
+      - CORS_ORIGIN=${CORS_ORIGIN:-http://localhost:3000}
+    networks:
+      - app-network
+    command: node socket-server.js
+
+networks:
+  app-network:
+    driver: bridge
 
 volumes:
-  data:
-  # pgdata:
-  node_modules:
+  mongo-data:
+    driver: local

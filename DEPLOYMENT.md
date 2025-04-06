@@ -1,116 +1,227 @@
-# Deployment Guide for Northflank
+# Deployment Guide
 
-This guide provides instructions for deploying the application to Northflank.
+This document provides instructions for deploying the application both locally using Docker Compose and to Northflank for production.
 
-## Prerequisites
+## Table of Contents
 
-1. A Northflank account
-2. Docker installed on your local machine (for testing)
-3. Git repository with your code
+- [Local Deployment with Docker Compose](#local-deployment-with-docker-compose)
+- [Production Deployment to Northflank](#production-deployment-to-northflank)
+  - [Setting Up Northflank](#setting-up-northflank)
+  - [Deploying the Services](#deploying-the-services)
+  - [Environment Variables](#environment-variables)
+  - [Connecting the Services](#connecting-the-services)
 
-## Deployment Steps
+## Local Deployment with Docker Compose
 
-### 1. Build and Test the Docker Image Locally (Optional)
+### Prerequisites
 
-Before deploying to Northflank, you can build and test the Docker image locally:
+- Docker and Docker Compose installed on your machine
+- Git repository cloned locally
 
-```bash
-# Build the Docker image
-docker build -t mock-pages-app .
+### Steps
 
-# Run the Docker container
-docker run -p 3000:3000 -p 3001:3001 mock-pages-app
-```
+1. **Create a .env file**
 
-Visit http://localhost:3000 to verify that the application is working correctly.
+   Copy the example environment file and update the values as needed:
 
-### 2. Deploy to Northflank
-
-#### Option 1: Deploy using the Northflank UI
-
-1. Log in to your Northflank account
-2. Create a new project or select an existing one
-3. Create a new service:
-   - Select "Deploy from Git repository"
-   - Connect your Git repository
-   - Select the branch you want to deploy
-   - Choose "Dockerfile" as the build method
-   - Configure the following settings:
-     - Port: 3000 (for the Next.js application)
-     - Additional port: 3001 (for the Socket.io server)
-   - Set the following environment variables:
-     - `NODE_ENV`: `production`
-     - `SOCKET_SERVER_PORT`: `3001`
-     - `NEXT_PUBLIC_SOCKET_SERVER_URL`: The URL of your Socket.io server (e.g., `https://your-app-domain.com`)
-   - Configure any other settings as needed (resources, scaling, etc.)
-4. Click "Create Service" to deploy the application
-
-#### Option 2: Deploy using the Northflank CLI
-
-1. Install the Northflank CLI:
    ```bash
-   npm install -g northflank-cli
+   cp .env.example .env
    ```
 
-2. Log in to your Northflank account:
+2. **Build and start the containers**
+
    ```bash
-   northflank login
+   docker-compose up --build
    ```
 
-3. Create a new project (if needed):
+   This will start three services:
+   - MongoDB database (`mongo`)
+   - Next.js application (`nextjs`)
+   - Socket.io server (`socketio`)
+
+3. **Access the application**
+
+   - Next.js application: http://localhost:3000
+   - Socket.io server: http://localhost:3001
+
+4. **Stop the containers**
+
    ```bash
-   northflank projects create --name "Mock Pages App"
+   docker-compose down
    ```
 
-4. Deploy the application:
-   ```bash
-   northflank services create \
-     --project "Mock Pages App" \
-     --name "mock-pages-app" \
-     --git-repo "your-git-repo-url" \
-     --git-branch "main" \
-     --build-method "dockerfile" \
-     --port 3000 \
-     --additional-port 3001 \
-     --env NODE_ENV=production \
-     --env SOCKET_SERVER_PORT=3001 \
-     --env NEXT_PUBLIC_SOCKET_SERVER_URL="https://your-app-domain.com"
+## Production Deployment to Northflank
+
+### Setting Up Northflank
+
+1. **Create a Northflank account**
+
+   Sign up at [Northflank](https://northflank.com/) if you don't have an account.
+
+2. **Create a new project**
+
+   Create a new project in Northflank to host your services.
+
+### Deploying the Services
+
+#### Option 1: Using Northflank Workflows (Recommended)
+
+1. **Connect your Git repository**
+
+   Connect your Git repository to Northflank.
+
+2. **Create a workflow**
+
+   Create a new workflow with the following steps:
+   - Build the Docker images
+   - Deploy the services
+
+3. **Configure the workflow**
+
+   Use the following configuration:
+
+   ```yaml
+   version: 1
+   steps:
+     - name: Build Next.js Image
+       type: build
+       dockerfile: Dockerfile
+       registry: northflank
+       image: nextjs-app
+       tag: latest
+     
+     - name: Build Socket.io Image
+       type: build
+       dockerfile: Dockerfile.socket
+       registry: northflank
+       image: socketio-server
+       tag: latest
+     
+     - name: Deploy MongoDB
+       type: deploy
+       service: mongo
+       image: mongo:latest
+       ports:
+         - port: 27017
+           protocol: tcp
+       volumes:
+         - name: mongo-data
+           mountPath: /data/db
+       env:
+         - name: MONGO_INITDB_ROOT_USERNAME
+           value: $MONGO_USERNAME
+         - name: MONGO_INITDB_ROOT_PASSWORD
+           value: $MONGO_PASSWORD
+     
+     - name: Deploy Next.js
+       type: deploy
+       service: nextjs
+       image: $REGISTRY/nextjs-app:latest
+       ports:
+         - port: 3000
+           protocol: http
+       env:
+         - name: NODE_ENV
+           value: production
+         - name: MONGODB_URI
+           value: mongodb://$MONGO_USERNAME:$MONGO_PASSWORD@mongo:27017/mockpages?authSource=admin
+         - name: PAYLOAD_SECRET
+           value: $PAYLOAD_SECRET
+         - name: PAYLOAD_PUBLIC_SERVER_URL
+           value: $PAYLOAD_PUBLIC_SERVER_URL
+         - name: NEXT_PUBLIC_SERVER_URL
+           value: $NEXT_PUBLIC_SERVER_URL
+         - name: NEXT_PUBLIC_SOCKET_SERVER_URL
+           value: $NEXT_PUBLIC_SOCKET_SERVER_URL
+     
+     - name: Deploy Socket.io
+       type: deploy
+       service: socketio
+       image: $REGISTRY/socketio-server:latest
+       ports:
+         - port: 3001
+           protocol: http
+       env:
+         - name: NODE_ENV
+           value: production
+         - name: CORS_ORIGIN
+           value: $CORS_ORIGIN
    ```
 
-### 3. Configure Domain and SSL
+#### Option 2: Manual Deployment
 
-1. In the Northflank UI, go to your service
-2. Navigate to the "Domains" tab
-3. Add your custom domain
-4. Configure SSL settings
+1. **Create a MongoDB service**
 
-### 4. Verify Deployment
+   - Create a new service using the MongoDB image
+   - Configure the environment variables:
+     - `MONGO_INITDB_ROOT_USERNAME`: Your MongoDB username
+     - `MONGO_INITDB_ROOT_PASSWORD`: Your MongoDB password
+   - Add a persistent volume for `/data/db`
 
-1. Visit your application's URL to verify that it's working correctly
-2. Test the real-time functionality to ensure that the Socket.io server is working
+2. **Create a Next.js service**
 
-## Environment Variables
+   - Create a new service using your Git repository
+   - Set the Dockerfile path to `Dockerfile`
+   - Configure the environment variables (see [Environment Variables](#environment-variables))
+   - Set the port to 3000
 
-The following environment variables are used in the application:
+3. **Create a Socket.io service**
 
-- `NODE_ENV`: The environment mode (should be set to `production` for production deployments)
-- `SOCKET_SERVER_PORT`: The port for the Socket.io server (default: 3001)
-- `NEXT_PUBLIC_SOCKET_SERVER_URL`: The URL of the Socket.io server (leave empty to use the same domain as the Next.js application)
+   - Create a new service using your Git repository
+   - Set the Dockerfile path to `Dockerfile.socket`
+   - Configure the environment variables (see [Environment Variables](#environment-variables))
+   - Set the port to 3001
+
+### Environment Variables
+
+Set the following environment variables in Northflank:
+
+#### MongoDB Service
+- `MONGO_INITDB_ROOT_USERNAME`: Your MongoDB username
+- `MONGO_INITDB_ROOT_PASSWORD`: Your MongoDB password
+
+#### Next.js Service
+- `NODE_ENV`: `production`
+- `MONGODB_URI`: `mongodb://username:password@mongo:27017/mockpages?authSource=admin`
+- `PAYLOAD_SECRET`: A secure random string
+- `PAYLOAD_PUBLIC_SERVER_URL`: The URL of your Next.js service
+- `NEXT_PUBLIC_SERVER_URL`: The URL of your Next.js service
+- `NEXT_PUBLIC_SOCKET_SERVER_URL`: The URL of your Socket.io service
+
+#### Socket.io Service
+- `NODE_ENV`: `production`
+- `CORS_ORIGIN`: The URL of your Next.js service
+
+### Connecting the Services
+
+1. **Create a network**
+
+   Create a network in Northflank to connect your services.
+
+2. **Add services to the network**
+
+   Add all three services to the network.
+
+3. **Configure DNS**
+
+   Ensure that the services can communicate with each other using their service names.
 
 ## Troubleshooting
 
-If you encounter any issues with the deployment, check the following:
+### Common Issues
 
-1. Logs: Check the service logs in the Northflank UI for any errors
-2. Environment variables: Ensure that all required environment variables are set correctly
-3. Ports: Verify that the ports are configured correctly (3000 for Next.js, 3001 for Socket.io)
-4. Network: Make sure that the Socket.io server can communicate with the Next.js application
+1. **Connection refused to MongoDB**
 
-## Scaling
+   Make sure the MongoDB service is running and the connection string is correct.
 
-If you need to scale your application, you can configure the following in the Northflank UI:
+2. **Socket.io connection issues**
 
-1. Horizontal scaling: Increase the number of instances
-2. Vertical scaling: Increase the resources (CPU, memory) for each instance
+   Check that the CORS settings are correct and the Socket.io server is accessible from the client.
 
-Note that when scaling horizontally, you'll need to ensure that the Socket.io server can handle multiple instances. You may need to use a Redis adapter for Socket.io to enable communication between instances.
+3. **Next.js build failures**
+
+   Check the build logs for errors and ensure all dependencies are installed correctly.
+
+### Getting Help
+
+If you encounter any issues, check the logs in Northflank or Docker Compose for more information.
