@@ -27,6 +27,10 @@ WORKDIR /app
 
 ENV NODE_ENV production
 
+# Bring other ENV variables from build stage
+ARG PAYLOAD_SECRET
+ENV PAYLOAD_SECRET=${PAYLOAD_SECRET}
+
 # Create a non-root user
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
