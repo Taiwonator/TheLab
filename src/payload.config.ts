@@ -14,6 +14,7 @@ import { MockPage } from './collections/MockPage'
 import { MockPageUser } from './collections/MockPageUser'
 
 console.log('process.env.PAYLOAD_SECRET: ', process.env.PAYLOAD_SECRET)
+console.log('process.env.MONGODB_URI: ', process.env.MONGODB_URI)
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
