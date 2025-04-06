@@ -1,13 +1,14 @@
 'use client'
 
 import { Reorder } from 'motion/react'
-import React, { useEffect, useState, Fragment, useRef } from 'react'
+import React, { useEffect, useState, Fragment, useRef, useCallback } from 'react'
 import { useSocket } from '../hooks/useSocket'
-import { DragDropContext, Droppable, Draggable, DropResult } from 'react-beautiful-dnd'
 import BlockForm from './BlockForm'
 import BlockEditForm from './BlockEditForm'
 import DeleteConfirmationModal from './DeleteConfirmationModal'
 import PaintingLoader from './PaintingLoader'
+import ConnectedUsers from './ConnectedUsers'
+import UserCursors from './UserCursors'
 import { Media, MockPageUser } from '@/payload-types'
 
 interface Block {
@@ -29,7 +30,8 @@ const MockPagePlayground: React.FC<MockPagePlaygroundProps> = ({
   pageId,
 }) => {
   // Initialize socket connection
-  const { socket, isConnected, emitBlockUpdate, emitOrderChange } = useSocket(pageId)
+  const { socket, isConnected, roomUsers, users, emitBlockUpdate, emitOrderChange, emitMouseMove } =
+    useSocket(pageId)
 
   // Log connection status
   useEffect(() => {
@@ -39,6 +41,17 @@ const MockPagePlayground: React.FC<MockPagePlaygroundProps> = ({
       console.log('Disconnected from Socket.io server')
     }
   }, [isConnected])
+
+  // Track mouse movements
+  const handleMouseMove = useCallback(
+    (e: React.MouseEvent) => {
+      if (isConnected) {
+        // Use clientX/clientY for viewport position and pageX/pageY for document position (includes scroll)
+        emitMouseMove(e.clientX, e.clientY, e.pageX, e.pageY)
+      }
+    },
+    [isConnected, emitMouseMove],
+  )
 
   // State to manage the order of blocks
   const [blocks, setBlocks] = useState<Block[]>(initialBlocks)
@@ -144,33 +157,6 @@ const MockPagePlayground: React.FC<MockPagePlaygroundProps> = ({
     // Log the blocks to the console
     console.log('Playground Blocks:', blocks)
   }, [blocks])
-
-  // Handle the end of a drag operation
-  const handleDragEnd = (result: DropResult) => {
-    console.log('Drag end event:', result)
-
-    // If dropped outside the list or no destination
-    if (!result.destination) {
-      console.log('No destination, ignoring drag')
-      return
-    }
-
-    // If the item was dropped in the same position
-    if (result.destination.index === result.source.index) {
-      console.log('Same position, ignoring drag')
-      return
-    }
-
-    // Reorder the blocks array
-    console.log('Reordering blocks from', result.source.index, 'to', result.destination.index)
-    const reorderedBlocks = Array.from(blocks)
-    const [removed] = reorderedBlocks.splice(result.source.index, 1)
-    reorderedBlocks.splice(result.destination.index, 0, removed)
-
-    // Update state with the new order
-    console.log('Setting new blocks order')
-    setBlocks(reorderedBlocks)
-  }
 
   // State to track saving status
   const [isSaving, setIsSaving] = useState(false)
@@ -500,12 +486,17 @@ const MockPagePlayground: React.FC<MockPagePlaygroundProps> = ({
   // })
 
   return (
-    <div className="playground-container">
+    <div className="playground-container" onMouseMove={handleMouseMove}>
+      {/* Display other users' cursors */}
+      <UserCursors users={users} currentUserId={socket?.id || null} />
       <div className="playground-header">
         <div className="header-content">
           <div className="header-left">
             <div className="page-title-container">
-              <span className="mode-tag">Playground mode</span>
+              <div className="mode-tag-container">
+                <span className="mode-tag">Playground mode</span>
+                <ConnectedUsers count={roomUsers} users={users} />
+              </div>
               <div className="page-title">
                 <a href="/mock-pages" className="back-arrow">
                   ←
@@ -775,6 +766,7 @@ const MockPagePlayground: React.FC<MockPagePlaygroundProps> = ({
                               className={`image-container ${loadingImages[block.id || `block-${index}`] ? 'loading' : ''}`}
                             >
                               <img
+                                draggable="false"
                                 src={imageUrl}
                                 alt={imageAlt}
                                 className="full-width-image"

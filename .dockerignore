@@ -5,7 +5,7 @@ yarn-debug.log
 yarn-error.log
 
 # Next.js build output
-.next
+# .next  # We need this for the Docker build
 out
 
 # Environment variables

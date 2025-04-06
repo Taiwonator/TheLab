@@ -2,7 +2,9 @@ import { getPayload } from 'payload'
 import { NextRequest, NextResponse } from 'next/server'
 import config from '@/payload.config'
 
-export async function POST(req: NextRequest, { params }: { params: { id: string } }) {
+type Params = Promise<{ id: string }>
+
+export async function POST(req: NextRequest, { params }: { params: Params }) {
   try {
     const formData = await req.formData()
     const name = formData.get('name') as string
@@ -15,14 +17,13 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
       return NextResponse.json({ error: 'Name and image are required' }, { status: 400 })
     }
 
+    const { id } = await params
+
     const payload = await getPayload({ config })
 
     // Check if the mock page exists
     try {
-      await payload.findByID({
-        collection: 'mock-pages',
-        id: params.id,
-      })
+      await payload.findByID({ collection: 'mock-pages', id })
     } catch (error) {
       return NextResponse.json({ error: 'Mock page not found' }, { status: 404 })
     }
@@ -53,15 +54,12 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
     }
 
     // Get the current mock page
-    const mockPage = await payload.findByID({
-      collection: 'mock-pages',
-      id: params.id,
-    })
+    const mockPage = await payload.findByID({ collection: 'mock-pages', id })
 
     // Add the new block to the mock page
     const updatedPage = await payload.update({
       collection: 'mock-pages',
-      id: params.id,
+      id,
       data: {
         blocks: [...(mockPage.blocks || []), newBlock],
       },
@@ -70,7 +68,7 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
     // Get the updated block with proper image URL
     const updatedMockPage = await payload.findByID({
       collection: 'mock-pages',
-      id: params.id,
+      id,
       depth: 2, // Populate the image field
     })
 

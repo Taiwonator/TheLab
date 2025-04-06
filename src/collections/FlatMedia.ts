@@ -1,4 +1,5 @@
-import { FlatMedia, Media } from '@/payload-types'
+import { Media } from '@/payload-types'
+import type { FlatMedia as FlatMediaType } from '@/payload-types'
 import type { CollectionConfig } from 'payload'
 import sharp from 'sharp'
 import axios from 'axios'
@@ -14,16 +15,18 @@ export const FlatMedia: CollectionConfig = {
       method: 'get',
       handler: async (req) => {
         if (!req.routeParams)
-          return {
-            status: 404,
-            message: 'Route params not found',
-          }
+          return new Response(
+            JSON.stringify({
+              message: 'Route params not found',
+            }),
+            { status: 404 },
+          )
 
         const { id, slug } = req.routeParams
         console.log('id: ', id)
         console.log('slug: ', slug)
 
-        const flatMedia: FlatMedia = await req.payload.findByID({
+        const flatMedia: FlatMediaType = await req.payload.findByID({
           collection: 'flat-media',
           id: id as string,
         })
@@ -31,10 +34,12 @@ export const FlatMedia: CollectionConfig = {
         console.log('flatMedia: ', flatMedia)
 
         if (!flatMedia.backgroundImage) {
-          return {
-            status: 404,
-            message: 'Background image not found',
-          }
+          return new Response(
+            JSON.stringify({
+              message: 'Background image not found',
+            }),
+            { status: 404 },
+          )
         }
 
         const backgroundImage: Media = await req.payload.findByID({
@@ -48,7 +53,7 @@ export const FlatMedia: CollectionConfig = {
         const foregroundImage: Media = await req.payload.findByID({
           collection: 'media',
           id: (
-            flatMedia.Variation.find((variation) => variation.slug === slug)
+            (flatMedia.Variation || []).find((variation) => variation.slug === slug)
               ?.foregroundImage as Media
           ).id,
         })
@@ -63,6 +68,24 @@ export const FlatMedia: CollectionConfig = {
         const foregroundImageRes = await axios.get(`http://localhost:3000${foregroundImage.url}`, {
           responseType: 'arraybuffer',
         })
+
+        if (
+          !backgroundImage.width ||
+          !backgroundImage.height ||
+          !foregroundImage.width ||
+          !foregroundImage.height
+        ) {
+          return new Response(
+            JSON.stringify({
+              message: 'Image dimensions not found',
+            }),
+            { status: 404 },
+          )
+        }
+
+        if (!focalX || !focalY) {
+          return new Response(JSON.stringify({ message: 'Focal point not found' }), { status: 404 })
+        }
 
         const top = Math.floor(backgroundImage.height * (focalY / 100) - foregroundImage.height / 2)
         const left = Math.floor(backgroundImage.width * (focalX / 100) - foregroundImage.width / 2)

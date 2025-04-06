@@ -6,9 +6,23 @@ interface BlockData {
   [key: string]: any
 }
 
+interface User {
+  id: string
+  icon: string
+  color: string
+  cursor: {
+    x: number
+    y: number
+    scrollX: number
+    scrollY: number
+  }
+}
+
 export function useSocket(pageId: string) {
   const [socket, setSocket] = useState<Socket | null>(null)
   const [isConnected, setIsConnected] = useState(false)
+  const [roomUsers, setRoomUsers] = useState(1) // Default to 1 (self)
+  const [users, setUsers] = useState<User[]>([]) // Store all users with their data
 
   useEffect(() => {
     let socketInstance: Socket
@@ -43,6 +57,35 @@ export function useSocket(pageId: string) {
           setIsConnected(false)
         })
 
+        // Listen for room users updates
+        socketInstance.on('room-users-updated', (data) => {
+          console.log('Room users updated:', data.count, data.users)
+          setRoomUsers(data.count)
+          setUsers(data.users || [])
+        })
+
+        // Listen for cursor updates
+        socketInstance.on('cursor-updated', (data) => {
+          console.log('Cursor updated:', data)
+          setUsers((prevUsers) => {
+            const userIndex = prevUsers.findIndex((user) => user.id === data.id)
+            if (userIndex !== -1) {
+              const updatedUsers = [...prevUsers]
+              updatedUsers[userIndex] = {
+                ...updatedUsers[userIndex],
+                cursor: {
+                  x: data.x,
+                  y: data.y,
+                  scrollX: data.scrollX || 0,
+                  scrollY: data.scrollY || 0,
+                },
+              }
+              return updatedUsers
+            }
+            return prevUsers
+          })
+        })
+
         setSocket(socketInstance)
       } catch (error) {
         console.error('Error initializing socket:', error)
@@ -54,6 +97,8 @@ export function useSocket(pageId: string) {
     // Clean up on unmount
     return () => {
       if (socketInstance) {
+        socketInstance.off('room-users-updated')
+        socketInstance.off('cursor-updated')
         socketInstance.disconnect()
       }
     }
@@ -85,10 +130,33 @@ export function useSocket(pageId: string) {
     [socket, isConnected, pageId],
   )
 
+  // Function to emit mouse movements
+  const emitMouseMove = useCallback(
+    (clientX: number, clientY: number, pageX: number, pageY: number) => {
+      if (socket && isConnected) {
+        // Calculate scroll position from the difference between page and client coordinates
+        const scrollX = pageX - clientX
+        const scrollY = pageY - clientY
+
+        socket.emit('mouse-move', {
+          pageId,
+          x: clientX,
+          y: clientY,
+          scrollX,
+          scrollY,
+        })
+      }
+    },
+    [socket, isConnected, pageId],
+  )
+
   return {
     socket,
     isConnected,
+    roomUsers,
+    users,
     emitBlockUpdate,
     emitOrderChange,
+    emitMouseMove,
   }
 }
