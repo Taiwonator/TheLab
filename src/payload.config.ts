@@ -13,6 +13,8 @@ import { FlatMedia } from './collections/FlatMedia'
 import { MockPage } from './collections/MockPage'
 import { MockPageUser } from './collections/MockPageUser'
 
+console.log('process.env.PAYLOAD_SECRET: ', process.env.PAYLOAD_SECRET)
+
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
 
@@ -25,7 +27,7 @@ export default buildConfig({
   },
   collections: [Users, Media, FlatMedia, MockPage, MockPageUser],
   editor: lexicalEditor(),
-  secret: process.env.PAYLOAD_SECRET || '',
+  secret: process.env.PAYLOAD_SECRET || '123',
   typescript: {
     outputFile: path.resolve(dirname, 'payload-types.ts'),
   },
