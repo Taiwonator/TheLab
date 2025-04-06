@@ -24,6 +24,8 @@ ENV NODE_ENV production
 ARG PAYLOAD_SECRET
 ENV PAYLOAD_SECRET=$PAYLOAD_SECRET
 
+RUN echo "hello ${PAYLOAD_SECRET}!"
+
 RUN npm run build
 
 # Production image, copy all the files and run next
