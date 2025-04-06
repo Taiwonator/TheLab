@@ -35,6 +35,7 @@ This document provides instructions for deploying the application both locally u
    ```
 
    This will start three services:
+
    - MongoDB database (`mongo`)
    - Next.js application (`nextjs`)
    - Socket.io server (`socketio`)
@@ -42,7 +43,7 @@ This document provides instructions for deploying the application both locally u
 3. **Access the application**
 
    - Next.js application: http://localhost:3000
-   - Socket.io server: http://localhost:3001
+   - Socket.io server: http://localhost:3000
 
 4. **Stop the containers**
 
@@ -73,6 +74,7 @@ This document provides instructions for deploying the application both locally u
 2. **Create a workflow**
 
    Create a new workflow with the following steps:
+
    - Build the Docker images
    - Deploy the services
 
@@ -89,14 +91,14 @@ This document provides instructions for deploying the application both locally u
        registry: northflank
        image: nextjs-app
        tag: latest
-     
+
      - name: Build Socket.io Image
        type: build
        dockerfile: Dockerfile.socket
        registry: northflank
        image: socketio-server
        tag: latest
-     
+
      - name: Deploy MongoDB
        type: deploy
        service: mongo
@@ -112,7 +114,7 @@ This document provides instructions for deploying the application both locally u
            value: $MONGO_USERNAME
          - name: MONGO_INITDB_ROOT_PASSWORD
            value: $MONGO_PASSWORD
-     
+
      - name: Deploy Next.js
        type: deploy
        service: nextjs
@@ -133,7 +135,7 @@ This document provides instructions for deploying the application both locally u
            value: $NEXT_PUBLIC_SERVER_URL
          - name: NEXT_PUBLIC_SOCKET_SERVER_URL
            value: $NEXT_PUBLIC_SOCKET_SERVER_URL
-     
+
      - name: Deploy Socket.io
        type: deploy
        service: socketio
@@ -177,10 +179,12 @@ This document provides instructions for deploying the application both locally u
 Set the following environment variables in Northflank:
 
 #### MongoDB Service
+
 - `MONGO_INITDB_ROOT_USERNAME`: Your MongoDB username
 - `MONGO_INITDB_ROOT_PASSWORD`: Your MongoDB password
 
 #### Next.js Service
+
 - `NODE_ENV`: `production`
 - `MONGODB_URI`: `mongodb://username:password@mongo:27017/mockpages?authSource=admin`
 - `PAYLOAD_SECRET`: A secure random string
@@ -189,6 +193,7 @@ Set the following environment variables in Northflank:
 - `NEXT_PUBLIC_SOCKET_SERVER_URL`: The URL of your Socket.io service
 
 #### Socket.io Service
+
 - `NODE_ENV`: `production`
 - `CORS_ORIGIN`: The URL of your Next.js service
 

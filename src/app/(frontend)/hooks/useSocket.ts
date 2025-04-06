@@ -31,7 +31,7 @@ export function useSocket(pageId: string) {
     const socketInit = async () => {
       try {
         // Connect to the Socket.io server using the environment variable
-        const socketServerUrl = process.env.NEXT_PUBLIC_SOCKET_SERVER_URL || 'http://localhost:3001'
+        const socketServerUrl = process.env.NEXT_PUBLIC_SOCKET_SERVER_URL || 'http://localhost:3000'
         socketInstance = io(socketServerUrl, {
           reconnectionAttempts: 5,
           reconnectionDelay: 1000,

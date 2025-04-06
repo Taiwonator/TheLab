@@ -34,6 +34,8 @@ services:
       - PAYLOAD_PUBLIC_SERVER_URL=${PAYLOAD_PUBLIC_SERVER_URL:-http://localhost:3000}
       - NEXT_PUBLIC_SERVER_URL=${NEXT_PUBLIC_SERVER_URL:-http://localhost:3000}
       - NEXT_PUBLIC_SOCKET_SERVER_URL=${NEXT_PUBLIC_SOCKET_SERVER_URL:-http://localhost:3001}
+    volumes:
+      - payload-media:/app/media
     networks:
       - app-network
     command: node server.js
@@ -62,4 +64,6 @@ networks:
 
 volumes:
   mongo-data:
+    driver: local
+  payload-media:
     driver: local

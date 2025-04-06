@@ -23,23 +23,6 @@ const MockPageBlocksClient: React.FC<MockPageBlocksClientProps> = ({ blocks, pag
   const [saveMessage, setSaveMessage] = useState('')
   const [isLoading, setIsLoading] = useState(false)
 
-  // Fetch available user types
-  useEffect(() => {
-    const fetchUserTypes = async () => {
-      try {
-        const response = await fetch('/api/user-types')
-        const data = await response.json()
-        if (response.ok) {
-          setAvailableUserTypes(data.userTypes || [])
-        }
-      } catch (error) {
-        console.error('Error fetching user types:', error)
-      }
-    }
-
-    fetchUserTypes()
-  }, [])
-
   // Function to update a block
   const updateBlock = async (blockData: { id: string; name: string; userTypes: string[] }) => {
     try {
