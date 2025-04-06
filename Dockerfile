@@ -41,12 +41,15 @@ WORKDIR /app
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 
+# Create media directory and set permissions
+RUN mkdir -p /app/media && chmod 777 /app/media
+
 # Copy built application
 COPY --from=builder --chown=nextjs:nodejs /app/.next ./.next
 COPY --from=builder --chown=nextjs:nodejs /app/node_modules ./node_modules
 COPY --from=builder --chown=nextjs:nodejs /app/package.json ./package.json
 COPY --from=builder --chown=nextjs:nodejs /app/server.js ./server.js
-COPY --from=builder --chown=nextjs:nodejs /app/media ./media
+# COPY --from=builder --chown=nextjs:nodejs /app/media ./media FOR LOCAL
 
 # Set proper permissions
 USER nextjs
