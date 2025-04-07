@@ -2367,6 +2367,12 @@ input:checked + .toggle-slider:before {
   width: 100%;
 }
 
+.prototype-blocks ul {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
 .prototype-block {
   position: relative;
   width: 100%;
