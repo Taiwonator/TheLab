@@ -929,69 +929,75 @@ const MockPagePlayground: React.FC<MockPagePlaygroundProps> = ({
                 <div className="prototype-canvas">
                   {filteredBlocks.length > 0 ? (
                     <div className="prototype-blocks">
-                      {/* Show all blocks, but with different opacity based on filter */}
-                      {blocks.map((block, index) => {
-                        const imageUrl =
-                          typeof block.image === 'string' ? block.image : block.image?.url
+                      <Reorder.Group axis="y" values={blocks} onReorder={setBlocks}>
+                        {/* Show all blocks, but with different opacity based on filter */}
+                        {blocks.map((block, index) => {
+                          const imageUrl =
+                            typeof block.image === 'string' ? block.image : block.image?.url
 
-                        const imageAlt =
-                          typeof block.image === 'string'
-                            ? block.name
-                            : block.image?.alt || block.name
+                          const imageAlt =
+                            typeof block.image === 'string'
+                              ? block.name
+                              : block.image?.alt || block.name
 
-                        // Check if this block matches any of the current filters
-                        const matchesFilter =
-                          selectedUserTypes.length === 0 ||
-                          block.userTypes?.some((userType) => {
-                            const typeId =
-                              typeof userType === 'string'
-                                ? `type-${userType}`
-                                : userType.id || `type-${userType.name}`
-                            return selectedUserTypes.includes(typeId)
-                          })
+                          // Check if this block matches any of the current filters
+                          const matchesFilter =
+                            selectedUserTypes.length === 0 ||
+                            block.userTypes?.some((userType) => {
+                              const typeId =
+                                typeof userType === 'string'
+                                  ? `type-${userType}`
+                                  : userType.id || `type-${userType.name}`
+                              return selectedUserTypes.includes(typeId)
+                            })
 
-                        return imageUrl ? (
-                          <div
-                            key={block.id || `prototype-block-${index}`}
-                            className={`prototype-block ${!matchesFilter ? 'faded' : ''} ${cleanView ? 'clean-view' : ''}`}
-                          >
-                            {!cleanView && (
-                              <div className="prototype-block-header">
-                                <span className="prototype-block-name">{block.name}</span>
-                                {block.userTypes && block.userTypes.length > 0 && (
-                                  <div className="prototype-user-type-tags">
-                                    {block.userTypes.map((userType, idx) => {
-                                      const typeName =
-                                        typeof userType === 'string' ? userType : userType.name
-                                      const typeId =
-                                        typeof userType === 'string' ? `type-${idx}` : userType.id
+                          return imageUrl ? (
+                            <Reorder.Item key={block.id} value={block} dragListener={false}>
+                              <div
+                                key={block.id || `prototype-block-${index}`}
+                                className={`prototype-block ${!matchesFilter ? 'faded' : ''} ${cleanView ? 'clean-view' : ''}`}
+                              >
+                                {!cleanView && (
+                                  <div className="prototype-block-header">
+                                    <span className="prototype-block-name">{block.name}</span>
+                                    {block.userTypes && block.userTypes.length > 0 && (
+                                      <div className="prototype-user-type-tags">
+                                        {block.userTypes.map((userType, idx) => {
+                                          const typeName =
+                                            typeof userType === 'string' ? userType : userType.name
+                                          const typeId =
+                                            typeof userType === 'string'
+                                              ? `type-${idx}`
+                                              : userType.id
 
-                                      return (
-                                        <span
-                                          key={typeId}
-                                          className="prototype-user-type-tag"
-                                          data-tag-index={
-                                            availableUserTypes.findIndex((ut) =>
-                                              typeof userType === 'string'
-                                                ? ut.name === userType
-                                                : ut.id === userType.id,
-                                            ) % 10
-                                          }
-                                        >
-                                          {typeName.charAt(0)}
-                                        </span>
-                                      )
-                                    })}
+                                          return (
+                                            <span
+                                              key={typeId}
+                                              className="prototype-user-type-tag"
+                                              data-tag-index={
+                                                availableUserTypes.findIndex((ut) =>
+                                                  typeof userType === 'string'
+                                                    ? ut.name === userType
+                                                    : ut.id === userType.id,
+                                                ) % 10
+                                              }
+                                            >
+                                              {typeName.charAt(0)}
+                                            </span>
+                                          )
+                                        })}
+                                      </div>
+                                    )}
                                   </div>
                                 )}
+                                <div className="prototype-image-container">
+                                  <img src={imageUrl} alt={imageAlt} className="prototype-image" />
+                                </div>
                               </div>
-                            )}
-                            <div className="prototype-image-container">
-                              <img src={imageUrl} alt={imageAlt} className="prototype-image" />
-                            </div>
-                          </div>
-                        ) : null
-                      })}
+                            </Reorder.Item>
+                          ) : null
+                        })}
+                      </Reorder.Group>
                     </div>
                   ) : (
                     <div className="prototype-no-blocks">
