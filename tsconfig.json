@@ -21,7 +21,7 @@
     "paths": {
       "@/*": ["./src/*"],
       "@payload-config": ["./src/payload.config.ts"],
-      "@(frontend|payload)/*": ["./src/app/($1)/*"]
+      "@(frontend)/*": ["./src/app/(frontend)/*"]
     },
     "target": "ES2022",
     "forceConsistentCasingInFileNames": true
