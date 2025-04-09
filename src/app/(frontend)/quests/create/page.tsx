@@ -198,7 +198,7 @@ export default function CreateQuestPage() {
 
   // If parameters are provided but invalid, or if valid, show the form
   return (
-    <div className="container mx-auto py-10 flex items-center justify-center">
+    <div className="container mx-auto py-10 flex items-center justify-center flex-col gap-4">
       <Card className="w-full max-w-md">
         <CardHeader>
           <CardTitle>Create New Quest</CardTitle>
@@ -225,61 +225,6 @@ export default function CreateQuestPage() {
                   disabled={isLoading || !isValidParams}
                 />
               </div>
-
-              <div className="flex flex-col space-y-1.5">
-                <Label htmlFor="media">Media Files (Optional)</Label>
-                <Input
-                  id="media"
-                  type="file"
-                  multiple
-                  onChange={handleFileChange}
-                  disabled={isLoading || !isValidParams}
-                  accept="image/jpeg,image/png,image/gif,image/webp,application/pdf"
-                  className="cursor-pointer"
-                />
-                <p className="text-xs text-gray-500 mt-1">
-                  Supported formats: JPEG, PNG, GIF, WebP, PDF
-                </p>
-              </div>
-
-              {/* File list */}
-              {mediaFiles.length > 0 && (
-                <div className="space-y-2">
-                  <Label>Selected Files</Label>
-                  <div className="border rounded-md p-2 space-y-2">
-                    {mediaFiles.map((file, index) => (
-                      <div
-                        key={index}
-                        className="flex items-center justify-between bg-gray-50 p-2 rounded"
-                      >
-                        <span className="text-sm truncate max-w-[200px]">{file.name}</span>
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => removeFile(index)}
-                          disabled={isLoading}
-                        >
-                          ✕
-                        </Button>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {/* Upload progress */}
-              {isUploading && (
-                <div className="space-y-1">
-                  <div className="text-sm">Uploading files... {Math.round(uploadProgress)}%</div>
-                  <div className="w-full bg-gray-200 rounded-full h-2.5">
-                    <div
-                      className="bg-primary h-2.5 rounded-full"
-                      style={{ width: `${uploadProgress}%` }}
-                    ></div>
-                  </div>
-                </div>
-              )}
             </div>
           </form>
         </CardContent>
@@ -289,6 +234,64 @@ export default function CreateQuestPage() {
           </Button>
         </CardFooter>
       </Card>
+
+      <form onSubmit={handleSubmit}>
+        <div className="grid w-full items-center gap-6">
+          <div className="flex flex-col space-y-1.5">
+            <Input
+              id="media"
+              type="file"
+              multiple
+              onChange={handleFileChange}
+              disabled={isLoading || !isValidParams}
+              accept="image/jpeg,image/png,image/gif,image/webp,application/pdf"
+              className="cursor-pointer"
+            />
+            <p className="text-xs text-gray-500 mt-1">
+              Supported formats: JPEG, PNG, GIF, WebP, PDF
+            </p>
+          </div>
+
+          {/* File list */}
+          {mediaFiles.length > 0 && (
+            <div className="space-y-2">
+              <Label>Selected Files</Label>
+              <div className="border rounded-md p-2 space-y-2">
+                {mediaFiles.map((file, index) => (
+                  <div
+                    key={index}
+                    className="flex items-center justify-between bg-gray-50 p-2 rounded"
+                  >
+                    <span className="text-sm truncate max-w-[200px]">{file.name}</span>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => removeFile(index)}
+                      disabled={isLoading}
+                    >
+                      ✕
+                    </Button>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Upload progress */}
+          {isUploading && (
+            <div className="space-y-1">
+              <div className="text-sm">Uploading files... {Math.round(uploadProgress)}%</div>
+              <div className="w-full bg-gray-200 rounded-full h-2.5">
+                <div
+                  className="bg-primary h-2.5 rounded-full"
+                  style={{ width: `${uploadProgress}%` }}
+                ></div>
+              </div>
+            </div>
+          )}
+        </div>
+      </form>
     </div>
   )
 }

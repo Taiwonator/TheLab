@@ -3,6 +3,7 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { cn } from '@(frontend)/lib/utils'
+import { ShareButton } from '@(frontend)/components/ui/share-button'
 
 const navItems = [
   { href: '/quests/create', label: 'Create' },
@@ -38,14 +39,7 @@ export function QuestsNavigation() {
           )
         })}
         <li className="relative">
-          <Link
-            href="#"
-            className={cn(
-              'text-sm font-medium transition-colors py-2 px-2 inline-flex rounded text-white bg-figma-purple hover:bg-figma-purple/90',
-            )}
-          >
-            Share
-          </Link>
+          <ShareButton className="bg-figma-purple text-white hover:bg-figma-purple-light" />
         </li>
       </ul>
     </nav>

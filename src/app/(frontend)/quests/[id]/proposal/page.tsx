@@ -13,6 +13,8 @@ import {
 } from '@(frontend)/components/ui/card'
 import { Textarea } from '@(frontend)/components/ui/textarea'
 import { Badge } from '@(frontend)/components/ui/badge'
+import { Spinner } from '@(frontend)/components/ui/spinner'
+import { ShareButton } from '@(frontend)/components/ui/share-button'
 import { UpdateStateModal } from '../../components/UpdateStateModal'
 import { StateLogTable } from '../../components/StateLogTable'
 
@@ -246,8 +248,11 @@ export default function QuestProposalPage({ params }: { params: { id: string } }
 
   if (isLoading) {
     return (
-      <div className="container mx-auto py-10 flex items-center justify-center">
-        <p>Loading quest details...</p>
+      <div className="container mx-auto py-10 flex items-center justify-center min-h-screen">
+        <div className="flex flex-col items-center">
+          <Spinner size="lg" />
+          <span className="mt-4 text-lg text-gray-600">Loading quest details...</span>
+        </div>
       </div>
     )
   }
@@ -282,11 +287,14 @@ export default function QuestProposalPage({ params }: { params: { id: string } }
                 : quest?.overview}
             </CardDescription>
           </div>
-          {quest?.latestState && (
-            <Badge className={getStateBadgeColor(quest.latestState)}>
-              {quest.latestState.charAt(0).toUpperCase() + quest.latestState.slice(1)}
-            </Badge>
-          )}
+          <div className="flex items-center gap-2">
+            {/* <ShareButton /> */}
+            {quest?.latestState && (
+              <Badge className={getStateBadgeColor(quest.latestState)}>
+                {quest.latestState.charAt(0).toUpperCase() + quest.latestState.slice(1)}
+              </Badge>
+            )}
+          </div>
         </CardHeader>
         <CardContent>
           {saveSuccess && (

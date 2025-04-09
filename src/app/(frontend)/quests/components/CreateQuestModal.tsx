@@ -98,18 +98,18 @@ export function CreateQuestModal({ open, onOpenChange }: CreateQuestModalProps) 
             <div className="bg-destructive/15 text-destructive p-3 rounded-md mb-4">{error}</div>
           )}
 
-          <div className="grid gap-4 py-4">
-            <div className="grid grid-cols-4 items-center gap-4">
+          <div className="grid gap-8 py-4">
+            <div className="grid items-center gap-2">
               <Label htmlFor="product" className="text-right">
                 What's the product?
               </Label>
-              <div className="col-span-3">
+              <div>
                 <Select
                   value={selectedProductId}
                   onValueChange={setSelectedProductId}
                   disabled={isLoading || products.length === 0}
                 >
-                  <SelectTrigger id="product">
+                  <SelectTrigger id="product" className="w-full">
                     <SelectValue placeholder="Select a product" />
                   </SelectTrigger>
                   <SelectContent>
@@ -123,17 +123,17 @@ export function CreateQuestModal({ open, onOpenChange }: CreateQuestModalProps) 
               </div>
             </div>
 
-            <div className="grid grid-cols-4 items-center gap-4">
+            <div className="grid items-center gap-2">
               <Label htmlFor="user" className="text-right">
                 Who are you?
               </Label>
-              <div className="col-span-3">
+              <div>
                 <Select
                   value={selectedUserId}
                   onValueChange={setSelectedUserId}
                   disabled={isLoading || users.length === 0}
                 >
-                  <SelectTrigger id="user">
+                  <SelectTrigger id="user" className="w-full">
                     <SelectValue placeholder="Select a user" />
                   </SelectTrigger>
                   <SelectContent>
@@ -169,7 +169,7 @@ export function CreateQuestModal({ open, onOpenChange }: CreateQuestModalProps) 
             <DialogDescription>Preparing your quest adventure...</DialogDescription>
           </DialogHeader>
           <div className="py-8 flex justify-center items-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+            <div className="animate-spin rounded-full h-12 w-12 border-b-4 border-figma-purple"></div>
           </div>
         </DialogContent>
       </Dialog>

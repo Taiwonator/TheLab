@@ -14,6 +14,8 @@ import {
 import { Input } from '@(frontend)/components/ui/input'
 import { Textarea } from '@(frontend)/components/ui/textarea'
 import { Badge } from '@(frontend)/components/ui/badge'
+import { Spinner } from '@(frontend)/components/ui/spinner'
+import { ShareButton } from '@(frontend)/components/ui/share-button'
 import { Quest } from '@/payload-types'
 import { UpdateStateModal } from '../components/UpdateStateModal'
 import { StateLogTable } from '../components/StateLogTable'
@@ -152,7 +154,10 @@ export default function QuestDetailPage() {
   if (isLoading) {
     return (
       <div className="container mx-auto py-10 flex items-center justify-center min-h-screen">
-        <p>Loading quest details...</p>
+        <div className="flex flex-col items-center">
+          <Spinner size="lg" />
+          <span className="mt-4 text-md text-gray-600">Loading quest details...</span>
+        </div>
       </div>
     )
   }
@@ -192,20 +197,24 @@ export default function QuestDetailPage() {
   }
 
   return (
-    <div className="container mx-auto py-10">
+    <div className="container mx-auto py-10 grid gap-8">
       <Card className="w-full">
         <CardHeader className="flex flex-row items-center justify-between">
           <div>
             <CardTitle>Quest Details</CardTitle>
             <CardDescription>
-              Created on {new Date(quest.dateCreated).toLocaleDateString()}
+              Created on{' '}
+              {quest.dateCreated ? new Date(quest.dateCreated).toLocaleDateString() : 'Unknown'}
             </CardDescription>
           </div>
-          {quest.latestState && (
-            <Badge className={getStateBadgeColor(quest.latestState)}>
-              {quest.latestState.charAt(0).toUpperCase() + quest.latestState.slice(1)}
-            </Badge>
-          )}
+          <div className="flex items-center gap-2">
+            {/* <ShareButton /> */}
+            {quest.latestState && (
+              <Badge className={getStateBadgeColor(quest.latestState)}>
+                {quest.latestState.charAt(0).toUpperCase() + quest.latestState.slice(1)}
+              </Badge>
+            )}
+          </div>
         </CardHeader>
         <CardContent>
           {saveSuccess && (
@@ -398,27 +407,6 @@ export default function QuestDetailPage() {
               </div>
             </div>
 
-            {/* State Logs */}
-            <div className="mt-8">
-              <div className="flex justify-between items-center mb-4">
-                <h3 className="text-lg font-medium">State History</h3>
-                {quest.latestState && ['created', 'reviewing'].includes(quest.latestState) && (
-                  <Button
-                    variant="secondary"
-                    onClick={() => setIsStateModalOpen(true)}
-                    className="ml-2"
-                  >
-                    Update State
-                  </Button>
-                )}
-              </div>
-              {isStateLogsLoading ? (
-                <div className="text-center py-4">Loading state logs...</div>
-              ) : (
-                <StateLogTable logs={stateLogs} />
-              )}
-            </div>
-
             {/* Media Files */}
             {quest.media && quest.media.length > 0 && (
               <div>
@@ -510,6 +498,30 @@ export default function QuestDetailPage() {
             onStateUpdated={refreshData}
           />
         )}
+      </Card>
+      <Card className="w-full">
+        <CardContent>
+          {/* State Logs */}
+          <div className="mt-8">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-lg font-medium">State History</h3>
+              {quest.latestState && ['created', 'reviewing'].includes(quest.latestState) && (
+                <Button
+                  variant="secondary"
+                  onClick={() => setIsStateModalOpen(true)}
+                  className="ml-2"
+                >
+                  Update State
+                </Button>
+              )}
+            </div>
+            {isStateLogsLoading ? (
+              <div className="text-center py-4">Loading state logs...</div>
+            ) : (
+              <StateLogTable logs={stateLogs} />
+            )}
+          </div>
+        </CardContent>
       </Card>
     </div>
   )

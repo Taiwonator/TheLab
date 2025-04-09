@@ -19,6 +19,8 @@ import {
   SelectValue,
 } from '@(frontend)/components/ui/select'
 import { Badge } from '@(frontend)/components/ui/badge'
+import { Spinner } from '@(frontend)/components/ui/spinner'
+import { ShareButton } from '@(frontend)/components/ui/share-button'
 import { Quest, QuestProduct, QuestUser } from '@/payload-types'
 
 interface QuestWithState extends Quest {
@@ -146,6 +148,7 @@ export default function QuestsListPage() {
     <div className="container mx-auto py-10">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold">Quests</h1>
+        <ShareButton />
       </div>
 
       {/* Filters */}
@@ -162,7 +165,7 @@ export default function QuestsListPage() {
                 value={productId || ''}
                 onValueChange={(value) => updateFilter('productId', value === '' ? null : value)}
               >
-                <SelectTrigger>
+                <SelectTrigger className="w-full">
                   <SelectValue placeholder="All Products" />
                 </SelectTrigger>
                 <SelectContent>
@@ -181,7 +184,7 @@ export default function QuestsListPage() {
                 value={userId || ''}
                 onValueChange={(value) => updateFilter('userId', value === '' ? null : value)}
               >
-                <SelectTrigger>
+                <SelectTrigger className="w-full">
                   <SelectValue placeholder="All Users" />
                 </SelectTrigger>
                 <SelectContent>
@@ -200,7 +203,7 @@ export default function QuestsListPage() {
                 value={state || ''}
                 onValueChange={(value) => updateFilter('state', value === '' ? null : value)}
               >
-                <SelectTrigger>
+                <SelectTrigger className="w-full">
                   <SelectValue placeholder="All States" />
                 </SelectTrigger>
                 <SelectContent>
@@ -223,8 +226,9 @@ export default function QuestsListPage() {
 
       {/* Loading state */}
       {isLoading ? (
-        <div className="text-center py-10">
-          <p>Loading quests...</p>
+        <div className="flex justify-center items-center py-20">
+          <Spinner size="lg" />
+          <span className="ml-3 text-lg text-gray-600">Loading quests...</span>
         </div>
       ) : (
         <>
@@ -246,55 +250,68 @@ export default function QuestsListPage() {
           ) : (
             <div className="grid grid-cols-1 gap-4">
               {quests.map((quest) => (
-                <Card key={quest.id} className="overflow-hidden">
-                  <CardContent className="p-0">
-                    <div className="p-6">
-                      <div className="flex justify-between items-start mb-2">
-                        <Link
-                          href={`/quests/${quest.id}`}
-                          className="text-xl font-medium hover:underline"
-                        >
-                          {quest.overview.length > 100
-                            ? `${quest.overview.substring(0, 100)}...`
-                            : quest.overview}
-                        </Link>
-                        {quest.latestState && (
-                          <Badge className={getStateBadgeColor(quest.latestState)}>
-                            {quest.latestState.charAt(0).toUpperCase() + quest.latestState.slice(1)}
-                          </Badge>
-                        )}
-                      </div>
+                <div key={quest.id} className="mb-4">
+                  <Link href={`/quests/${quest.id}`} className="block">
+                    <Card className="overflow-hidden transition-colors hover:bg-[#F9F5FF] cursor-pointer">
+                      <CardContent className="p-0">
+                        <div className="p-6">
+                          <div className="flex justify-between items-start mb-2">
+                            <div className="text-xl font-medium">
+                              {quest.overview.length > 100
+                                ? `${quest.overview.substring(0, 100)}...`
+                                : quest.overview}
+                            </div>
+                            {quest.latestState && (
+                              <Badge className={getStateBadgeColor(quest.latestState)}>
+                                {quest.latestState.charAt(0).toUpperCase() +
+                                  quest.latestState.slice(1)}
+                              </Badge>
+                            )}
+                          </div>
 
-                      <div className="flex flex-wrap gap-2 text-sm text-gray-500">
-                        <div>
-                          Product:{' '}
-                          {typeof quest.productId === 'object' ? quest.productId.name : 'Unknown'}
-                        </div>
-                        <div className="mx-2">•</div>
-                        <div>
-                          User: {typeof quest.userId === 'object' ? quest.userId.name : 'Unknown'}
-                        </div>
-                        <div className="mx-2">•</div>
-                        <div>
-                          Created:{' '}
-                          {quest.dateCreated
-                            ? new Date(quest.dateCreated).toLocaleDateString()
-                            : 'Unknown'}
-                        </div>
-                      </div>
+                          <div className="flex flex-wrap gap-2 text-sm text-gray-500">
+                            <div>
+                              Product:{' '}
+                              {typeof quest.productId === 'object'
+                                ? quest.productId.name
+                                : 'Unknown'}
+                            </div>
+                            <div className="mx-2">•</div>
+                            <div>
+                              User:{' '}
+                              {typeof quest.userId === 'object' ? quest.userId.name : 'Unknown'}
+                            </div>
+                            <div className="mx-2">•</div>
+                            <div>
+                              Created:{' '}
+                              {quest.dateCreated
+                                ? new Date(quest.dateCreated).toLocaleDateString()
+                                : 'Unknown'}
+                            </div>
+                          </div>
 
-                      <div className="mt-4 flex justify-end">
-                        {quest.latestState === 'proposing' && (
-                          <Link href={`/quests/${quest.id}/proposal`}>
-                            <Button size="sm" variant="outline" className="flex items-center gap-1">
-                              {quest.proposal ? 'Edit Proposal' : 'Write Proposal'} <span>✏️</span>
-                            </Button>
-                          </Link>
-                        )}
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
+                          {quest.latestState === 'proposing' && (
+                            <div
+                              className="mt-4 flex justify-end"
+                              onClick={(e) => e.stopPropagation()}
+                            >
+                              <Link href={`/quests/${quest.id}/proposal`}>
+                                <Button
+                                  size="sm"
+                                  variant="outline"
+                                  className="flex items-center gap-1"
+                                >
+                                  {quest.proposal ? 'Edit Proposal' : 'Write Proposal'}{' '}
+                                  <span>✏️</span>
+                                </Button>
+                              </Link>
+                            </div>
+                          )}
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </Link>
+                </div>
               ))}
             </div>
           )}
