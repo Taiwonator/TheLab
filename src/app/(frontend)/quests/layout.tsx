@@ -1,5 +1,6 @@
 import '../styles/globals.css'
 import Link from 'next/link'
+import { QuestsNavigation } from './components/QuestsNavigation'
 
 export const metadata = {
   title: 'Quests',
@@ -14,20 +15,7 @@ export default function QuestsLayout({ children }: { children: React.ReactNode }
           <Link href="/quests" className="text-xl font-bold">
             Quests
           </Link>
-          <nav>
-            <ul className="flex space-x-4">
-              <li>
-                <Link href="/quests" className="text-sm font-medium hover:text-primary">
-                  All Quests
-                </Link>
-              </li>
-              <li>
-                <Link href="/quests/create" className="text-sm font-medium hover:text-primary">
-                  Create Quest
-                </Link>
-              </li>
-            </ul>
-          </nav>
+          <QuestsNavigation />
         </div>
       </header>
       {children}

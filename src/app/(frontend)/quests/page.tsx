@@ -118,9 +118,11 @@ export default function QuestsListPage() {
         return 'bg-blue-100 text-blue-800'
       case 'proposing':
         return 'bg-yellow-100 text-yellow-800'
+      case 'reviewing':
+        return 'bg-purple-100 text-purple-800'
       case 'approved':
         return 'bg-green-100 text-green-800'
-      case 'rejected':
+      case 'denied':
         return 'bg-red-100 text-red-800'
       default:
         return 'bg-gray-100 text-gray-800'
@@ -204,8 +206,9 @@ export default function QuestsListPage() {
                 <SelectContent>
                   <SelectItem value="created">Created</SelectItem>
                   <SelectItem value="proposing">Proposing</SelectItem>
+                  <SelectItem value="reviewing">Reviewing</SelectItem>
                   <SelectItem value="approved">Approved</SelectItem>
-                  <SelectItem value="rejected">Rejected</SelectItem>
+                  <SelectItem value="denied">Denied</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -272,7 +275,22 @@ export default function QuestsListPage() {
                           User: {typeof quest.userId === 'object' ? quest.userId.name : 'Unknown'}
                         </div>
                         <div className="mx-2">•</div>
-                        <div>Created: {new Date(quest.dateCreated).toLocaleDateString()}</div>
+                        <div>
+                          Created:{' '}
+                          {quest.dateCreated
+                            ? new Date(quest.dateCreated).toLocaleDateString()
+                            : 'Unknown'}
+                        </div>
+                      </div>
+
+                      <div className="mt-4 flex justify-end">
+                        {quest.latestState === 'proposing' && (
+                          <Link href={`/quests/${quest.id}/proposal`}>
+                            <Button size="sm" variant="outline" className="flex items-center gap-1">
+                              {quest.proposal ? 'Edit Proposal' : 'Write Proposal'} <span>✏️</span>
+                            </Button>
+                          </Link>
+                        )}
                       </div>
                     </div>
                   </CardContent>

@@ -90,17 +90,37 @@ export const Quest: CollectionConfig = {
         },
       },
     },
+    {
+      name: 'media',
+      type: 'relationship',
+      relationTo: 'quest-media',
+      hasMany: true,
+      admin: {
+        description: 'Media files attached to this quest',
+      },
+    },
+    {
+      name: 'proposal',
+      type: 'textarea',
+      admin: {
+        description: 'Proposal for this quest',
+        condition: (data) => {
+          // Only show this field in the admin panel if the quest has a state log with 'proposing' state
+          return true // We'll always show it in admin, but control visibility on frontend
+        },
+      },
+    },
   ],
   hooks: {
     beforeChange: [
       ({ data }) => {
-        const now = new Date();
-        
+        const now = new Date()
+
         return {
           ...data,
           dateCreated: data.dateCreated || now,
           dateModified: now,
-        };
+        }
       },
     ],
   },

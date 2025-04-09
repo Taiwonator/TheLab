@@ -18,6 +18,7 @@ import { QuestProduct } from './collections/QuestProduct'
 import { Quest } from './collections/Quest'
 import { QuestStateLog } from './collections/QuestStateLog'
 import { QuestUsers } from './collections/QuestUsers'
+import { QuestMedia } from './collections/QuestMedia'
 
 console.log('process.env.PAYLOAD_SECRET: ', process.env.PAYLOAD_SECRET)
 console.log('process.env.MONGODB_URI: ', process.env.MONGODB_URI)
@@ -44,6 +45,7 @@ export default buildConfig({
     Quest,
     QuestStateLog,
     QuestUsers,
+    QuestMedia,
   ],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || '123',

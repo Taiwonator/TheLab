@@ -4,12 +4,12 @@ import config from '@/payload.config'
 
 export async function POST(req: NextRequest) {
   try {
-    const { productId, userId, overview } = await req.json()
+    const { productId, userId, overview, media } = await req.json()
 
     if (!productId || !userId || !overview) {
       return NextResponse.json(
         { error: 'Product ID, User ID, and Overview are required' },
-        { status: 400 }
+        { status: 400 },
       )
     }
 
@@ -22,10 +22,7 @@ export async function POST(req: NextRequest) {
         id: productId,
       })
     } catch (error) {
-      return NextResponse.json(
-        { error: 'Product not found' },
-        { status: 404 }
-      )
+      return NextResponse.json({ error: 'Product not found' }, { status: 404 })
     }
 
     try {
@@ -34,10 +31,7 @@ export async function POST(req: NextRequest) {
         id: userId,
       })
     } catch (error) {
-      return NextResponse.json(
-        { error: 'User not found' },
-        { status: 404 }
-      )
+      return NextResponse.json({ error: 'User not found' }, { status: 404 })
     }
 
     // Create a new quest
@@ -55,6 +49,7 @@ export async function POST(req: NextRequest) {
         },
         dateCreated: new Date(),
         dateModified: new Date(),
+        media: media || undefined,
       },
     })
 
@@ -76,11 +71,11 @@ export async function POST(req: NextRequest) {
   } catch (error) {
     console.error('Error creating quest:', error)
     return NextResponse.json(
-      { 
-        error: 'Failed to create quest', 
-        details: error instanceof Error ? error.message : String(error) 
+      {
+        error: 'Failed to create quest',
+        details: error instanceof Error ? error.message : String(error),
       },
-      { status: 500 }
+      { status: 500 },
     )
   }
 }

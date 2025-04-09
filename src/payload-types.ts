@@ -78,6 +78,7 @@ export interface Config {
     quests: Quest;
     'quest-state-logs': QuestStateLog;
     'quest-users': QuestUser;
+    'quest-media': QuestMedia;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
     'payload-migrations': PayloadMigration;
@@ -95,6 +96,7 @@ export interface Config {
     quests: QuestsSelect<false> | QuestsSelect<true>;
     'quest-state-logs': QuestStateLogsSelect<false> | QuestStateLogsSelect<true>;
     'quest-users': QuestUsersSelect<false> | QuestUsersSelect<true>;
+    'quest-media': QuestMediaSelect<false> | QuestMediaSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
     'payload-migrations': PayloadMigrationsSelect<false> | PayloadMigrationsSelect<true>;
@@ -312,6 +314,14 @@ export interface Quest {
   };
   dateCreated?: string | null;
   dateModified?: string | null;
+  /**
+   * Media files attached to this quest
+   */
+  media?: (string | QuestMedia)[] | null;
+  /**
+   * Proposal for this quest
+   */
+  proposal?: string | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -329,6 +339,35 @@ export interface QuestUser {
   dateModified?: string | null;
   updatedAt: string;
   createdAt: string;
+}
+/**
+ * Media files attached to quests
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "quest-media".
+ */
+export interface QuestMedia {
+  id: string;
+  title: string;
+  /**
+   * Optional description of the media file
+   */
+  description?: string | null;
+  /**
+   * Alternative text for images (for accessibility)
+   */
+  alt?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  url?: string | null;
+  thumbnailURL?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
+  focalX?: number | null;
+  focalY?: number | null;
 }
 /**
  * Logs of state changes for quests
@@ -349,7 +388,11 @@ export interface QuestStateLog {
   /**
    * The state of the quest
    */
-  state: 'created' | 'proposing' | 'approved' | 'rejected';
+  state: 'created' | 'proposing' | 'reviewing' | 'approved' | 'denied';
+  /**
+   * Notes about this state change
+   */
+  notes?: string | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -403,6 +446,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'quest-users';
         value: string | QuestUser;
+      } | null)
+    | ({
+        relationTo: 'quest-media';
+        value: string | QuestMedia;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -574,6 +621,8 @@ export interface QuestsSelect<T extends boolean = true> {
       };
   dateCreated?: T;
   dateModified?: T;
+  media?: T;
+  proposal?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -585,6 +634,7 @@ export interface QuestStateLogsSelect<T extends boolean = true> {
   questId?: T;
   timestamp?: T;
   state?: T;
+  notes?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -599,6 +649,26 @@ export interface QuestUsersSelect<T extends boolean = true> {
   dateModified?: T;
   updatedAt?: T;
   createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "quest-media_select".
+ */
+export interface QuestMediaSelect<T extends boolean = true> {
+  title?: T;
+  description?: T;
+  alt?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  url?: T;
+  thumbnailURL?: T;
+  filename?: T;
+  mimeType?: T;
+  filesize?: T;
+  width?: T;
+  height?: T;
+  focalX?: T;
+  focalY?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

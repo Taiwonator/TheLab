@@ -33,12 +33,20 @@ export const QuestStateLog: CollectionConfig = {
       options: [
         { label: 'Created', value: 'created' },
         { label: 'Proposing', value: 'proposing' },
+        { label: 'Reviewing', value: 'reviewing' },
         { label: 'Approved', value: 'approved' },
-        { label: 'Rejected', value: 'rejected' },
+        { label: 'Denied', value: 'denied' },
       ],
       required: true,
       admin: {
         description: 'The state of the quest',
+      },
+    },
+    {
+      name: 'notes',
+      type: 'textarea',
+      admin: {
+        description: 'Notes about this state change',
       },
     },
   ],
@@ -50,9 +58,9 @@ export const QuestStateLog: CollectionConfig = {
           return {
             ...data,
             timestamp: new Date(),
-          };
+          }
         }
-        return data;
+        return data
       },
     ],
   },
