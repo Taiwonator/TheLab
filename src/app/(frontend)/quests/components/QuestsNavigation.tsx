@@ -19,19 +19,17 @@ export function QuestsNavigation() {
       <ul className="flex space-x-6">
         {navItems.map((item) => {
           // Check if the current path matches this nav item
-          const isActive = item.exact 
-            ? pathname === item.href
-            : pathname.startsWith(item.href)
-          
+          const isActive = item.exact ? pathname === item.href : pathname.startsWith(item.href)
+
           return (
-            <li key={item.href}>
+            <li key={item.href} className="relative">
               <Link
                 href={item.href}
                 className={cn(
-                  "text-sm font-medium transition-colors hover:text-primary",
-                  isActive 
-                    ? "text-primary font-semibold" 
-                    : "text-muted-foreground"
+                  'text-sm font-medium transition-colors py-2 px-2 inline-flex rounded hover:text-primary hover:bg-black/5',
+                  isActive
+                    ? 'text-primary font-semibold bg-figma-purple-light hover:bg-figma-purple-light'
+                    : 'text-muted-foreground',
                 )}
               >
                 {item.label}
@@ -39,6 +37,16 @@ export function QuestsNavigation() {
             </li>
           )
         })}
+        <li className="relative">
+          <Link
+            href="#"
+            className={cn(
+              'text-sm font-medium transition-colors py-2 px-2 inline-flex rounded text-white bg-figma-purple hover:bg-figma-purple/90',
+            )}
+          >
+            Share
+          </Link>
+        </li>
       </ul>
     </nav>
   )

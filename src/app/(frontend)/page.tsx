@@ -5,7 +5,7 @@ import React from 'react'
 import { fileURLToPath } from 'url'
 
 import config from '@/payload.config'
-import './styles.css'
+import '@(frontend)/styles/mock-pages.css'
 
 export default async function HomePage() {
   const headers = await getHeaders()
@@ -19,11 +19,11 @@ export default async function HomePage() {
     <div className="home">
       <div className="content">
         <picture>
-          <source srcSet="https://raw.githubusercontent.com/payloadcms/payload/main/packages/ui/src/assets/payload-favicon.svg" />
+          <source srcSet="https://irp.cdn-website.com/3b1e1eec/dms3rep/multi/BizClik-Transp-RGB.svg" />
           <Image
             alt="Payload Logo"
             height={65}
-            src="https://raw.githubusercontent.com/payloadcms/payload/main/packages/ui/src/assets/payload-favicon.svg"
+            src="https://irp.cdn-website.com/3b1e1eec/dms3rep/multi/BizClik-Transp-RGB.svg"
             width={65}
           />
         </picture>
@@ -38,23 +38,26 @@ export default async function HomePage() {
           >
             Go to admin panel
           </a>
-          <a
+          {/* <a
             className="docs"
             href="https://payloadcms.com/docs"
             rel="noopener noreferrer"
             target="_blank"
           >
             Documentation
-          </a>
+          </a> */}
           <a className="docs" href="/mock-pages">
             Mock Pages ⭐
+          </a>
+          <a className="docs" href="/quests">
+            Quests 🛡️
           </a>
         </div>
       </div>
       <div className="footer">
-        <p>Update this page by editing</p>
+        <p>Experimental tools helpful to the</p>
         <a className="codeLink" href={fileURL}>
-          <code>app/(frontend)/page.tsx</code>
+          <code>Web Team 🎉</code>
         </a>
       </div>
     </div>

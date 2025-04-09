@@ -1,6 +1,7 @@
 import '../styles/globals.css'
 import Link from 'next/link'
 import { QuestsNavigation } from './components/QuestsNavigation'
+import { cn } from '@(frontend)/lib/utils'
 
 export const metadata = {
   title: 'Quests',
@@ -9,11 +10,11 @@ export const metadata = {
 
 export default function QuestsLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="min-h-screen bg-background">
-      <header className="border-b">
-        <div className="container mx-auto py-4 px-4 flex justify-between items-center">
+    <div className="min-h-screen bg-pokerdot">
+      <header className="p-4">
+        <div className="container mx-auto py-2 px-4 flex justify-between items-center bg-white rounded-2xl shadow-sm">
           <Link href="/quests" className="text-xl font-bold">
-            Quests
+            Quests 🛡️
           </Link>
           <QuestsNavigation />
         </div>
