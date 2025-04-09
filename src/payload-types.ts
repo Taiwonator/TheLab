@@ -72,6 +72,12 @@ export interface Config {
     'flat-media': FlatMedia;
     'mock-pages': MockPage;
     'mock-page-users': MockPageUser;
+    request: Request;
+    'quest-impact-maps': QuestImpactMap;
+    'quest-products': QuestProduct;
+    quests: Quest;
+    'quest-state-logs': QuestStateLog;
+    'quest-users': QuestUser;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
     'payload-migrations': PayloadMigration;
@@ -83,6 +89,12 @@ export interface Config {
     'flat-media': FlatMediaSelect<false> | FlatMediaSelect<true>;
     'mock-pages': MockPagesSelect<false> | MockPagesSelect<true>;
     'mock-page-users': MockPageUsersSelect<false> | MockPageUsersSelect<true>;
+    request: RequestSelect<false> | RequestSelect<true>;
+    'quest-impact-maps': QuestImpactMapsSelect<false> | QuestImpactMapsSelect<true>;
+    'quest-products': QuestProductsSelect<false> | QuestProductsSelect<true>;
+    quests: QuestsSelect<false> | QuestsSelect<true>;
+    'quest-state-logs': QuestStateLogsSelect<false> | QuestStateLogsSelect<true>;
+    'quest-users': QuestUsersSelect<false> | QuestUsersSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
     'payload-migrations': PayloadMigrationsSelect<false> | PayloadMigrationsSelect<true>;
@@ -203,6 +215,146 @@ export interface MockPageUser {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "request".
+ */
+export interface Request {
+  id: string;
+  name: string;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * Impact maps for quest products
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "quest-impact-maps".
+ */
+export interface QuestImpactMap {
+  id: string;
+  title: string;
+  /**
+   * JSON object containing columns with nodes. Format: { column_key: { index: number, description: string, items: node[] } }
+   */
+  Nodes?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * Products that can be used to create quests
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "quest-products".
+ */
+export interface QuestProduct {
+  id: string;
+  name: string;
+  /**
+   * The impact map associated with this product
+   */
+  ImpactMap?: (string | null) | QuestImpactMap;
+  Agent?: {
+    /**
+     * Memory for the agent associated with this product
+     */
+    memory?: string | null;
+  };
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * Quests created by users for specific products
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "quests".
+ */
+export interface Quest {
+  id: string;
+  /**
+   * The product this quest is associated with
+   */
+  productId: string | QuestProduct;
+  /**
+   * The user who created this quest
+   */
+  userId: string | QuestUser;
+  /**
+   * Overview of the quest
+   */
+  overview: string;
+  /**
+   * AI-generated labels for this quest
+   */
+  AILabels?: {
+    /**
+     * What entity is making the request
+     */
+    source?: string | null;
+    /**
+     * What is it
+     */
+    type?: string | null;
+    /**
+     * What system does it affect
+     */
+    system?: string | null;
+    /**
+     * What is the outcome
+     */
+    outcome?: string | null;
+  };
+  dateCreated?: string | null;
+  dateModified?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * Users who can create and manage quests
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "quest-users".
+ */
+export interface QuestUser {
+  id: string;
+  name: string;
+  email: string;
+  dateCreated?: string | null;
+  dateModified?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * Logs of state changes for quests
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "quest-state-logs".
+ */
+export interface QuestStateLog {
+  id: string;
+  /**
+   * The quest this state log is associated with
+   */
+  questId: string | Quest;
+  /**
+   * Timestamp of when the state change occurred
+   */
+  timestamp: string;
+  /**
+   * The state of the quest
+   */
+  state: 'created' | 'proposing' | 'approved' | 'rejected';
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-locked-documents".
  */
 export interface PayloadLockedDocument {
@@ -227,6 +379,30 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'mock-page-users';
         value: string | MockPageUser;
+      } | null)
+    | ({
+        relationTo: 'request';
+        value: string | Request;
+      } | null)
+    | ({
+        relationTo: 'quest-impact-maps';
+        value: string | QuestImpactMap;
+      } | null)
+    | ({
+        relationTo: 'quest-products';
+        value: string | QuestProduct;
+      } | null)
+    | ({
+        relationTo: 'quests';
+        value: string | Quest;
+      } | null)
+    | ({
+        relationTo: 'quest-state-logs';
+        value: string | QuestStateLog;
+      } | null)
+    | ({
+        relationTo: 'quest-users';
+        value: string | QuestUser;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -343,6 +519,84 @@ export interface MockPagesSelect<T extends boolean = true> {
  */
 export interface MockPageUsersSelect<T extends boolean = true> {
   name?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "request_select".
+ */
+export interface RequestSelect<T extends boolean = true> {
+  name?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "quest-impact-maps_select".
+ */
+export interface QuestImpactMapsSelect<T extends boolean = true> {
+  title?: T;
+  Nodes?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "quest-products_select".
+ */
+export interface QuestProductsSelect<T extends boolean = true> {
+  name?: T;
+  ImpactMap?: T;
+  Agent?:
+    | T
+    | {
+        memory?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "quests_select".
+ */
+export interface QuestsSelect<T extends boolean = true> {
+  productId?: T;
+  userId?: T;
+  overview?: T;
+  AILabels?:
+    | T
+    | {
+        source?: T;
+        type?: T;
+        system?: T;
+        outcome?: T;
+      };
+  dateCreated?: T;
+  dateModified?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "quest-state-logs_select".
+ */
+export interface QuestStateLogsSelect<T extends boolean = true> {
+  questId?: T;
+  timestamp?: T;
+  state?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "quest-users_select".
+ */
+export interface QuestUsersSelect<T extends boolean = true> {
+  name?: T;
+  email?: T;
+  dateCreated?: T;
+  dateModified?: T;
   updatedAt?: T;
   createdAt?: T;
 }
