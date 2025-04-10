@@ -2,18 +2,15 @@ import { getPayload } from 'payload'
 import { NextRequest, NextResponse } from 'next/server'
 import config from '@/payload.config'
 
-export async function GET(
-  req: NextRequest,
-  { params }: { params: { id: string } }
-) {
+type Params = { params: Promise<{ id: string }> }
+
+export async function GET(req: NextRequest, { params }: Params) {
   try {
-    const { id } = params
+    const resolvedParams = await params
+    const { id } = resolvedParams
 
     if (!id) {
-      return NextResponse.json(
-        { error: 'Product ID is required' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'Product ID is required' }, { status: 400 })
     }
 
     const payload = await getPayload({ config })
@@ -28,11 +25,11 @@ export async function GET(
   } catch (error) {
     console.error('Error fetching quest product:', error)
     return NextResponse.json(
-      { 
-        error: 'Failed to fetch quest product', 
-        details: error instanceof Error ? error.message : String(error) 
+      {
+        error: 'Failed to fetch quest product',
+        details: error instanceof Error ? error.message : String(error),
       },
-      { status: 500 }
+      { status: 500 },
     )
   }
 }

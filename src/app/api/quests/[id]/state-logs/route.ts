@@ -2,18 +2,15 @@ import { getPayload } from 'payload'
 import { NextRequest, NextResponse } from 'next/server'
 import config from '@/payload.config'
 
-export async function GET(
-  req: NextRequest,
-  { params }: { params: { id: string } }
-) {
+type Params = { params: Promise<{ id: string }> }
+
+export async function GET(req: NextRequest, { params }: Params) {
   try {
-    const { id } = params
+    const resolvedParams = await params
+    const { id } = resolvedParams
 
     if (!id) {
-      return NextResponse.json(
-        { error: 'Quest ID is required' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'Quest ID is required' }, { status: 400 })
     }
 
     const payload = await getPayload({ config })
@@ -25,10 +22,7 @@ export async function GET(
         id,
       })
     } catch (error) {
-      return NextResponse.json(
-        { error: 'Quest not found' },
-        { status: 404 }
-      )
+      return NextResponse.json({ error: 'Quest not found' }, { status: 404 })
     }
 
     // Fetch all state logs for this quest
@@ -46,11 +40,11 @@ export async function GET(
   } catch (error) {
     console.error('Error fetching state logs:', error)
     return NextResponse.json(
-      { 
-        error: 'Failed to fetch state logs', 
-        details: error instanceof Error ? error.message : String(error) 
+      {
+        error: 'Failed to fetch state logs',
+        details: error instanceof Error ? error.message : String(error),
       },
-      { status: 500 }
+      { status: 500 },
     )
   }
 }

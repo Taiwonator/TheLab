@@ -2,9 +2,12 @@ import { getPayload } from 'payload'
 import { NextRequest, NextResponse } from 'next/server'
 import config from '@/payload.config'
 
-export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
+type Params = { params: Promise<{ id: string }> }
+
+export async function GET(req: NextRequest, { params }: Params) {
   try {
-    const { id } = params
+    const resolvedParams = await params
+    const { id } = resolvedParams
 
     if (!id) {
       return NextResponse.json({ error: 'Quest ID is required' }, { status: 400 })
@@ -50,9 +53,10 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
   }
 }
 
-export async function PATCH(req: NextRequest, { params }: { params: { id: string } }) {
+export async function PATCH(req: NextRequest, { params }: Params) {
   try {
-    const { id } = params
+    const resolvedParams = await params
+    const { id } = resolvedParams
     const { overview } = await req.json()
 
     if (!id) {
@@ -103,7 +107,7 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
       id,
       data: {
         overview,
-        dateModified: new Date(),
+        dateModified: new Date().toISOString(),
       },
     })
 

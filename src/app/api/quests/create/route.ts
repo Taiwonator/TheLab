@@ -47,8 +47,8 @@ export async function POST(req: NextRequest) {
           system: '',
           outcome: '',
         },
-        dateCreated: new Date(),
-        dateModified: new Date(),
+        dateCreated: new Date().toISOString(),
+        dateModified: new Date().toISOString(),
         media: media || undefined,
       },
     })
@@ -58,7 +58,7 @@ export async function POST(req: NextRequest) {
       collection: 'quest-state-logs',
       data: {
         questId: newQuest.id,
-        timestamp: new Date(),
+        timestamp: new Date().toISOString(),
         state: 'created',
       },
     })

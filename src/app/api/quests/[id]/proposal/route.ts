@@ -2,9 +2,12 @@ import { getPayload } from 'payload'
 import { NextRequest, NextResponse } from 'next/server'
 import config from '@/payload.config'
 
-export async function PATCH(req: NextRequest, { params }: { params: { id: string } }) {
+type Params = { params: Promise<{ id: string }> }
+
+export async function PATCH(req: NextRequest, { params }: Params) {
   try {
-    const { id } = params
+    const resolvedParams = await params
+    const { id } = resolvedParams
     const { proposal } = await req.json()
 
     if (!id) {
@@ -62,7 +65,7 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
       id,
       data: {
         proposal,
-        dateModified: new Date(),
+        dateModified: new Date().toISOString(),
       },
     })
 

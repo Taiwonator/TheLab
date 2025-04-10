@@ -2,42 +2,33 @@ import { getPayload } from 'payload'
 import { NextRequest, NextResponse } from 'next/server'
 import config from '@/payload.config'
 
-export async function POST(
-  req: NextRequest,
-  { params }: { params: { id: string } }
-) {
+type Params = { params: Promise<{ id: string }> }
+
+export async function POST(req: NextRequest, { params }: Params) {
   try {
-    const { id } = params
+    const resolvedParams = await params
+    const { id } = resolvedParams
     const { state, notes } = await req.json()
 
     if (!id) {
-      return NextResponse.json(
-        { error: 'Quest ID is required' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'Quest ID is required' }, { status: 400 })
     }
 
     if (!state) {
-      return NextResponse.json(
-        { error: 'State is required' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'State is required' }, { status: 400 })
     }
 
     // Validate state
     const validStates = ['created', 'proposing', 'reviewing', 'approved', 'denied']
     if (!validStates.includes(state)) {
-      return NextResponse.json(
-        { error: 'Invalid state' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'Invalid state' }, { status: 400 })
     }
 
     // Require notes for approved or denied states
     if ((state === 'approved' || state === 'denied') && !notes) {
       return NextResponse.json(
         { error: 'Notes are required when approving or denying a quest' },
-        { status: 400 }
+        { status: 400 },
       )
     }
 
@@ -51,10 +42,7 @@ export async function POST(
         id,
       })
     } catch (error) {
-      return NextResponse.json(
-        { error: 'Quest not found' },
-        { status: 404 }
-      )
+      return NextResponse.json({ error: 'Quest not found' }, { status: 404 })
     }
 
     // Fetch the latest state log for this quest
@@ -73,33 +61,35 @@ export async function POST(
 
     // Validate state transitions
     if (latestState === state) {
-      return NextResponse.json(
-        { error: `Quest is already in the ${state} state` },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: `Quest is already in the ${state} state` }, { status: 400 })
     }
 
     // Validate state transitions
     if (latestState === 'approved' || latestState === 'denied') {
       return NextResponse.json(
         { error: 'Cannot change state of an approved or denied quest' },
-        { status: 403 }
+        { status: 403 },
       )
     }
 
     // Validate transitions from created state
     if (latestState === 'created' && !['proposing', 'approved', 'denied'].includes(state)) {
       return NextResponse.json(
-        { error: 'From created state, quest can only transition to proposing, approved, or denied' },
-        { status: 400 }
+        {
+          error: 'From created state, quest can only transition to proposing, approved, or denied',
+        },
+        { status: 400 },
       )
     }
 
     // Validate transitions from reviewing state
     if (latestState === 'reviewing' && !['proposing', 'approved', 'denied'].includes(state)) {
       return NextResponse.json(
-        { error: 'From reviewing state, quest can only transition to proposing, approved, or denied' },
-        { status: 400 }
+        {
+          error:
+            'From reviewing state, quest can only transition to proposing, approved, or denied',
+        },
+        { status: 400 },
       )
     }
 
@@ -107,7 +97,7 @@ export async function POST(
     if (latestState === 'proposing' && state !== 'reviewing') {
       return NextResponse.json(
         { error: 'From proposing state, quest can only transition to reviewing' },
-        { status: 400 }
+        { status: 400 },
       )
     }
 
@@ -117,7 +107,7 @@ export async function POST(
       data: {
         questId: id,
         state,
-        timestamp: new Date(),
+        timestamp: new Date().toISOString(),
         notes: notes || undefined,
       },
     })
@@ -127,7 +117,7 @@ export async function POST(
       collection: 'quests',
       id,
       data: {
-        dateModified: new Date(),
+        dateModified: new Date().toISOString(),
       },
     })
 
@@ -140,11 +130,11 @@ export async function POST(
   } catch (error) {
     console.error('Error updating quest state:', error)
     return NextResponse.json(
-      { 
-        error: 'Failed to update quest state', 
-        details: error instanceof Error ? error.message : String(error) 
+      {
+        error: 'Failed to update quest state',
+        details: error instanceof Error ? error.message : String(error),
       },
-      { status: 500 }
+      { status: 500 },
     )
   }
 }
