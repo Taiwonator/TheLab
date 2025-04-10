@@ -182,18 +182,20 @@ export default function CreateQuestPage() {
   // If no productId or userId is provided, show the shield button
   if (!productId || !userId) {
     return (
-      <div className="container min-h-screen mx-auto py-10 flex items-center justify-center">
-        <div className="text-center">
-          <Button
-            onClick={() => setModalOpen(true)}
-            size="lg"
-            className="px-8 py-6 text-sm flex flex-col items-center gap-4"
-          >
-            Create Quest 🛡️
-          </Button>
-          <CreateQuestModal open={modalOpen} onOpenChange={setModalOpen} />
+      <Suspense fallback={<Spinner size="md" />}>
+        <div className="container min-h-screen mx-auto py-10 flex items-center justify-center">
+          <div className="text-center">
+            <Button
+              onClick={() => setModalOpen(true)}
+              size="lg"
+              className="px-8 py-6 text-sm flex flex-col items-center gap-4"
+            >
+              Create Quest 🛡️
+            </Button>
+            <CreateQuestModal open={modalOpen} onOpenChange={setModalOpen} />
+          </div>
         </div>
-      </div>
+      </Suspense>
     )
   }
 

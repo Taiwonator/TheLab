@@ -258,35 +258,39 @@ export default function QuestProposalPage() {
     )
   } else if (error && !quest) {
     return (
-      <div className="container mx-auto py-10">
-        <Card>
-          <CardHeader>
-            <CardTitle>Error</CardTitle>
-            <CardDescription>{error}</CardDescription>
-          </CardHeader>
-          <CardFooter>
-            <Button variant="outline" onClick={() => router.push('/quests')}>
-              Back to Quests
-            </Button>
-          </CardFooter>
-        </Card>
-      </div>
+      <Suspense fallback={<Spinner size="md" />}>
+        <div className="container mx-auto py-10">
+          <Card>
+            <CardHeader>
+              <CardTitle>Error</CardTitle>
+              <CardDescription>{error}</CardDescription>
+            </CardHeader>
+            <CardFooter>
+              <Button variant="outline" onClick={() => router.push('/quests')}>
+                Back to Quests
+              </Button>
+            </CardFooter>
+          </Card>
+        </div>
+      </Suspense>
     )
   } else if (!quest) {
     return (
-      <div className="container mx-auto py-10">
-        <Card>
-          <CardHeader>
-            <CardTitle>Error</CardTitle>
-            <CardDescription>Quest not found</CardDescription>
-          </CardHeader>
-          <CardFooter>
-            <Button variant="outline" onClick={() => router.push('/quests')}>
-              Back to Quests
-            </Button>
-          </CardFooter>
-        </Card>
-      </div>
+      <Suspense fallback={<Spinner size="md" />}>
+        <div className="container mx-auto py-10">
+          <Card>
+            <CardHeader>
+              <CardTitle>Error</CardTitle>
+              <CardDescription>Quest not found</CardDescription>
+            </CardHeader>
+            <CardFooter>
+              <Button variant="outline" onClick={() => router.push('/quests')}>
+                Back to Quests
+              </Button>
+            </CardFooter>
+          </Card>
+        </div>
+      </Suspense>
     )
   }
 
