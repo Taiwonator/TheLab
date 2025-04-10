@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, Suspense } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import { Button } from '@(frontend)/components/ui/button'
 import {
@@ -291,113 +291,115 @@ export default function QuestProposalPage() {
   }
 
   return (
-    <div className="container mx-auto py-10">
-      <Card className="w-full">
-        <CardHeader className="flex flex-row items-center justify-between">
-          <div>
-            <CardTitle>Write Proposal</CardTitle>
-            <CardDescription>
-              {quest?.overview.length > 100
-                ? `${quest.overview.substring(0, 100)}...`
-                : quest?.overview}
-            </CardDescription>
-          </div>
-          <div className="flex items-center gap-2">
-            {/* <ShareButton /> */}
-            {quest?.latestState && (
-              <Badge className={getStateBadgeColor(quest.latestState)}>
-                {quest.latestState.charAt(0).toUpperCase() + quest.latestState.slice(1)}
-              </Badge>
-            )}
-          </div>
-        </CardHeader>
-        <CardContent>
-          {saveSuccess && (
-            <div className="bg-green-100 text-green-800 p-3 rounded-md mb-4">{saveSuccess}</div>
-          )}
-          {error && (
-            <div className="bg-destructive/15 text-destructive p-3 rounded-md mb-4">{error}</div>
-          )}
-          <div className="space-y-4">
+    <Suspense fallback={<Spinner size="md" />}>
+      <div className="container mx-auto py-10">
+        <Card className="w-full">
+          <CardHeader className="flex flex-row items-center justify-between">
             <div>
-              <h3 className="text-lg font-medium mb-2">Quest Overview</h3>
-              <div className="p-4 bg-gray-50 rounded-md">
-                <p className="text-gray-700">{quest?.overview}</p>
+              <CardTitle>Write Proposal</CardTitle>
+              <CardDescription>
+                {quest?.overview.length > 100
+                  ? `${quest.overview.substring(0, 100)}...`
+                  : quest?.overview}
+              </CardDescription>
+            </div>
+            <div className="flex items-center gap-2">
+              {/* <ShareButton /> */}
+              {quest?.latestState && (
+                <Badge className={getStateBadgeColor(quest.latestState)}>
+                  {quest.latestState.charAt(0).toUpperCase() + quest.latestState.slice(1)}
+                </Badge>
+              )}
+            </div>
+          </CardHeader>
+          <CardContent>
+            {saveSuccess && (
+              <div className="bg-green-100 text-green-800 p-3 rounded-md mb-4">{saveSuccess}</div>
+            )}
+            {error && (
+              <div className="bg-destructive/15 text-destructive p-3 rounded-md mb-4">{error}</div>
+            )}
+            <div className="space-y-4">
+              <div>
+                <h3 className="text-lg font-medium mb-2">Quest Overview</h3>
+                <div className="p-4 bg-gray-50 rounded-md">
+                  <p className="text-gray-700">{quest?.overview}</p>
+                </div>
+              </div>
+
+              <div>
+                <h3 className="text-lg font-medium mb-2">
+                  {quest?.latestState === 'proposing' ? 'Your Proposal' : 'Proposal'}
+                </h3>
+                <Textarea
+                  value={proposal}
+                  onChange={(e) => setProposal(e.target.value)}
+                  placeholder="Write your proposal here..."
+                  className="min-h-[200px]"
+                  disabled={isSaving || quest?.latestState !== 'proposing'}
+                  readOnly={quest?.latestState !== 'proposing'}
+                />
               </div>
             </div>
+          </CardContent>
+          <CardContent className="pt-0">
+            <div className="mt-8">
+              <h3 className="text-lg font-medium mb-4">State History</h3>
+              {isStateLogsLoading ? (
+                <div className="text-center py-4">Loading state logs...</div>
+              ) : (
+                <StateLogTable logs={stateLogs} />
+              )}
+            </div>
+          </CardContent>
 
+          <CardFooter className="flex justify-between">
             <div>
-              <h3 className="text-lg font-medium mb-2">
-                {quest?.latestState === 'proposing' ? 'Your Proposal' : 'Proposal'}
-              </h3>
-              <Textarea
-                value={proposal}
-                onChange={(e) => setProposal(e.target.value)}
-                placeholder="Write your proposal here..."
-                className="min-h-[200px]"
-                disabled={isSaving || quest?.latestState !== 'proposing'}
-                readOnly={quest?.latestState !== 'proposing'}
-              />
+              <Button variant="outline" onClick={() => router.push(`/quests/${quest?.id}`)}>
+                {quest?.latestState === 'proposing' ? 'Cancel' : 'Back to Quest'}
+              </Button>
+
+              {/* Update State button - only show for created or reviewing states */}
+              {quest?.latestState && ['created', 'reviewing'].includes(quest.latestState) && (
+                <Button
+                  variant="secondary"
+                  onClick={() => setIsStateModalOpen(true)}
+                  className="ml-2"
+                >
+                  Update State
+                </Button>
+              )}
             </div>
-          </div>
-        </CardContent>
-        <CardContent className="pt-0">
-          <div className="mt-8">
-            <h3 className="text-lg font-medium mb-4">State History</h3>
-            {isStateLogsLoading ? (
-              <div className="text-center py-4">Loading state logs...</div>
-            ) : (
-              <StateLogTable logs={stateLogs} />
+
+            {quest?.latestState === 'proposing' && (
+              <div className="flex gap-2">
+                <Button
+                  variant="outline"
+                  onClick={handleSubmit}
+                  disabled={isSaving || !proposal.trim()}
+                >
+                  {isSaving ? 'Saving...' : 'Save Draft'}
+                </Button>
+
+                <Button onClick={handleSendForReview} disabled={isSaving || !proposal.trim()}>
+                  {isSaving ? 'Sending...' : 'Send for Review'}
+                </Button>
+              </div>
             )}
-          </div>
-        </CardContent>
+          </CardFooter>
 
-        <CardFooter className="flex justify-between">
-          <div>
-            <Button variant="outline" onClick={() => router.push(`/quests/${quest?.id}`)}>
-              {quest?.latestState === 'proposing' ? 'Cancel' : 'Back to Quest'}
-            </Button>
-
-            {/* Update State button - only show for created or reviewing states */}
-            {quest?.latestState && ['created', 'reviewing'].includes(quest.latestState) && (
-              <Button
-                variant="secondary"
-                onClick={() => setIsStateModalOpen(true)}
-                className="ml-2"
-              >
-                Update State
-              </Button>
-            )}
-          </div>
-
-          {quest?.latestState === 'proposing' && (
-            <div className="flex gap-2">
-              <Button
-                variant="outline"
-                onClick={handleSubmit}
-                disabled={isSaving || !proposal.trim()}
-              >
-                {isSaving ? 'Saving...' : 'Save Draft'}
-              </Button>
-
-              <Button onClick={handleSendForReview} disabled={isSaving || !proposal.trim()}>
-                {isSaving ? 'Sending...' : 'Send for Review'}
-              </Button>
-            </div>
+          {/* State Update Modal */}
+          {quest && (
+            <UpdateStateModal
+              open={isStateModalOpen}
+              onOpenChange={setIsStateModalOpen}
+              questId={quest.id}
+              currentState={quest.latestState || ''}
+              onStateUpdated={refreshData}
+            />
           )}
-        </CardFooter>
-
-        {/* State Update Modal */}
-        {quest && (
-          <UpdateStateModal
-            open={isStateModalOpen}
-            onOpenChange={setIsStateModalOpen}
-            questId={quest.id}
-            currentState={quest.latestState || ''}
-            onStateUpdated={refreshData}
-          />
-        )}
-      </Card>
-    </div>
+        </Card>
+      </div>
+    </Suspense>
   )
 }
