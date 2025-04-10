@@ -13,6 +13,7 @@ export const Media: CollectionConfig = {
     },
   ],
   upload: {
+    staticDir: 'media',
     focalPoint: true,
   },
 }

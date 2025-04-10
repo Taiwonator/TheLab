@@ -7,10 +7,8 @@ export const QuestMedia: CollectionConfig = {
     description: 'Media files attached to quests',
   },
   upload: {
-    staticURL: '/quest-media',
-    staticDir: 'quest-media',
+    staticDir: 'media',
     mimeTypes: ['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'application/pdf'],
-    filesRequireAuth: false,
   },
   fields: [
     {
