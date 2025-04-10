@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { useRouter } from 'next/navigation'
+import { useParams, useRouter } from 'next/navigation'
 import { Button } from '@(frontend)/components/ui/button'
 import {
   Card,
@@ -14,13 +14,9 @@ import {
 import { Textarea } from '@(frontend)/components/ui/textarea'
 import { Badge } from '@(frontend)/components/ui/badge'
 import { Spinner } from '@(frontend)/components/ui/spinner'
-import { ShareButton } from '@(frontend)/components/ui/share-button'
+// import { ShareButton } from '@(frontend)/components/ui/share-button'
 import { UpdateStateModal } from '../../components/UpdateStateModal'
 import { StateLogTable } from '../../components/StateLogTable'
-
-export type PageProps = {
-  params: Promise<{ id: string }>
-}
 
 interface Quest {
   id: string
@@ -32,7 +28,8 @@ interface Quest {
   dateCreated: string
 }
 
-export default function QuestProposalPage({ params }: PageProps) {
+export default function QuestProposalPage() {
+  const params = useParams()
   const router = useRouter()
   const [quest, setQuest] = useState<Quest | null>(null)
   const [proposal, setProposal] = useState('')

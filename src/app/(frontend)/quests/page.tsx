@@ -20,7 +20,7 @@ import {
 } from '@(frontend)/components/ui/select'
 import { Badge } from '@(frontend)/components/ui/badge'
 import { Spinner } from '@(frontend)/components/ui/spinner'
-import { ShareButton } from '@(frontend)/components/ui/share-button'
+// import { ShareButton } from '@(frontend)/components/ui/share-button'
 import { Quest, QuestProduct, QuestUser } from '@/payload-types'
 
 interface QuestWithState extends Quest {
@@ -148,7 +148,7 @@ export default function QuestsListPage() {
     <div className="container mx-auto py-10">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold">Quests</h1>
-        <ShareButton />
+        {/* <ShareButton /> */}
       </div>
 
       {/* Filters */}
