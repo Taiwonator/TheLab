@@ -18,6 +18,10 @@ import { ShareButton } from '@(frontend)/components/ui/share-button'
 import { UpdateStateModal } from '../../components/UpdateStateModal'
 import { StateLogTable } from '../../components/StateLogTable'
 
+export type PageProps = {
+  params: Promise<{ id: string }>
+}
+
 interface Quest {
   id: string
   overview: string
@@ -28,7 +32,7 @@ interface Quest {
   dateCreated: string
 }
 
-export default function QuestProposalPage({ params }: { params: { id: string } }) {
+export default function QuestProposalPage({ params }: PageProps) {
   const router = useRouter()
   const [quest, setQuest] = useState<Quest | null>(null)
   const [proposal, setProposal] = useState('')
