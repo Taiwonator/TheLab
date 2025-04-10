@@ -145,14 +145,15 @@ export default function QuestsListPage() {
   // }
 
   return (
-    <div className="container mx-auto py-10">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold">Quests</h1>
-        {/* <ShareButton /> */}
-      </div>
+    <Suspense fallback={<Spinner size="md" />}>
+      <div className="container mx-auto py-10">
+        <div className="flex justify-between items-center mb-6">
+          <h1 className="text-3xl font-bold">Quests</h1>
+          {/* <ShareButton /> */}
+        </div>
 
-      {/* Filters */}
-      <Suspense fallback={<Spinner size="md" />}>
+        {/* Filters */}
+
         <Card className="mb-6">
           <CardHeader>
             <CardTitle>Filters</CardTitle>
@@ -219,104 +220,107 @@ export default function QuestsListPage() {
             </div>
           </CardContent>
         </Card>
-      </Suspense>
 
-      {/* Error message */}
-      {error && (
-        <div className="bg-destructive/15 text-destructive p-3 rounded-md mb-4">{error}</div>
-      )}
+        {/* Error message */}
+        {error && (
+          <div className="bg-destructive/15 text-destructive p-3 rounded-md mb-4">{error}</div>
+        )}
 
-      {/* Loading state */}
-      {isLoading ? (
-        <div className="flex justify-center items-center py-20">
-          <Spinner size="lg" />
-          <span className="ml-3 text-lg text-gray-600">Loading quests...</span>
-        </div>
-      ) : (
-        <>
-          {/* Results count */}
-          <p className="text-sm text-gray-500 mb-4">
-            Showing {quests.length} {quests.length === 1 ? 'quest' : 'quests'}
-          </p>
+        {/* Loading state */}
+        {isLoading ? (
+          <div className="flex justify-center items-center py-20">
+            <Spinner size="lg" />
+            <span className="ml-3 text-lg text-gray-600">Loading quests...</span>
+          </div>
+        ) : (
+          <>
+            {/* Results count */}
+            <p className="text-sm text-gray-500 mb-4">
+              Showing {quests.length} {quests.length === 1 ? 'quest' : 'quests'}
+            </p>
 
-          {/* Quests list */}
-          {quests.length === 0 ? (
-            <Card>
-              <CardContent className="py-10 text-center">
-                <p className="text-gray-500">No quests found matching the selected filters.</p>
-                <Button variant="outline" className="mt-4" onClick={() => router.push('/quests')}>
-                  Clear Filters
-                </Button>
-              </CardContent>
-            </Card>
-          ) : (
-            <div className="grid grid-cols-1 gap-4">
-              {quests.map((quest) => (
-                <div key={quest.id} className="mb-4">
-                  {/* <Link href={`/quests/${quest.id}`} className="block"> */}
-                  <Card className="relative overflow-hidden transition-colors hover:bg-[#F9F5FF] cursor-pointer">
-                    <CardContent className="p-0">
-                      <div className="p-6">
-                        <div className="flex justify-between items-start mb-2">
-                          <div className="text-xl font-medium">
-                            {quest.overview.length > 100
-                              ? `${quest.overview.substring(0, 100)}...`
-                              : quest.overview}
+            {/* Quests list */}
+            {quests.length === 0 ? (
+              <Card>
+                <CardContent className="py-10 text-center">
+                  <p className="text-gray-500">No quests found matching the selected filters.</p>
+                  <Button variant="outline" className="mt-4" onClick={() => router.push('/quests')}>
+                    Clear Filters
+                  </Button>
+                </CardContent>
+              </Card>
+            ) : (
+              <div className="grid grid-cols-1 gap-4">
+                {quests.map((quest) => (
+                  <div key={quest.id} className="mb-4">
+                    {/* <Link href={`/quests/${quest.id}`} className="block"> */}
+                    <Card className="relative overflow-hidden transition-colors hover:bg-[#F9F5FF] cursor-pointer">
+                      <CardContent className="p-0">
+                        <div className="p-6">
+                          <div className="flex justify-between items-start mb-2">
+                            <div className="text-xl font-medium">
+                              {quest.overview.length > 100
+                                ? `${quest.overview.substring(0, 100)}...`
+                                : quest.overview}
+                            </div>
+                            {quest.latestState && (
+                              <Badge className={getStateBadgeColor(quest.latestState)}>
+                                {quest.latestState.charAt(0).toUpperCase() +
+                                  quest.latestState.slice(1)}
+                              </Badge>
+                            )}
                           </div>
-                          {quest.latestState && (
-                            <Badge className={getStateBadgeColor(quest.latestState)}>
-                              {quest.latestState.charAt(0).toUpperCase() +
-                                quest.latestState.slice(1)}
-                            </Badge>
+
+                          <div className="flex flex-wrap gap-2 text-sm text-gray-500">
+                            <div>
+                              Product:{' '}
+                              {typeof quest.productId === 'object'
+                                ? quest.productId.name
+                                : 'Unknown'}
+                            </div>
+                            <div className="mx-2">•</div>
+                            <div>
+                              User:{' '}
+                              {typeof quest.userId === 'object' ? quest.userId.name : 'Unknown'}
+                            </div>
+                            <div className="mx-2">•</div>
+                            <div>
+                              Created:{' '}
+                              {quest.dateCreated
+                                ? new Date(quest.dateCreated).toLocaleDateString()
+                                : 'Unknown'}
+                            </div>
+                          </div>
+
+                          {quest.latestState === 'proposing' && (
+                            <div
+                              className="mt-4 flex justify-end"
+                              onClick={(e) => e.stopPropagation()}
+                            >
+                              <Link href={`/quests/${quest.id}/proposal`}>
+                                <Button
+                                  size="sm"
+                                  variant="outline"
+                                  className="flex items-center gap-1"
+                                >
+                                  {quest.proposal ? 'Edit Proposal' : 'Write Proposal'}{' '}
+                                  <span>✏️</span>
+                                </Button>
+                              </Link>
+                            </div>
                           )}
                         </div>
-
-                        <div className="flex flex-wrap gap-2 text-sm text-gray-500">
-                          <div>
-                            Product:{' '}
-                            {typeof quest.productId === 'object' ? quest.productId.name : 'Unknown'}
-                          </div>
-                          <div className="mx-2">•</div>
-                          <div>
-                            User: {typeof quest.userId === 'object' ? quest.userId.name : 'Unknown'}
-                          </div>
-                          <div className="mx-2">•</div>
-                          <div>
-                            Created:{' '}
-                            {quest.dateCreated
-                              ? new Date(quest.dateCreated).toLocaleDateString()
-                              : 'Unknown'}
-                          </div>
-                        </div>
-
-                        {quest.latestState === 'proposing' && (
-                          <div
-                            className="mt-4 flex justify-end"
-                            onClick={(e) => e.stopPropagation()}
-                          >
-                            <Link href={`/quests/${quest.id}/proposal`}>
-                              <Button
-                                size="sm"
-                                variant="outline"
-                                className="flex items-center gap-1"
-                              >
-                                {quest.proposal ? 'Edit Proposal' : 'Write Proposal'}{' '}
-                                <span>✏️</span>
-                              </Button>
-                            </Link>
-                          </div>
-                        )}
-                      </div>
-                    </CardContent>
-                    <Link href={`/quests/${quest.id}`} className="absolute w-full h-full" />
-                  </Card>
-                  {/* </Link> */}
-                </div>
-              ))}
-            </div>
-          )}
-        </>
-      )}
-    </div>
+                      </CardContent>
+                      <Link href={`/quests/${quest.id}`} className="absolute w-full h-full" />
+                    </Card>
+                    {/* </Link> */}
+                  </div>
+                ))}
+              </div>
+            )}
+          </>
+        )}
+      </div>
+    </Suspense>
   )
 }
