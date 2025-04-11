@@ -2,6 +2,10 @@ import { createServer } from 'http'
 import { parse } from 'url'
 import next from 'next'
 import { Server } from 'socket.io'
+import dotenv from 'dotenv'
+
+const envFile = process.env.NODE_ENV === 'production' ? '.env.production' : '.env'
+dotenv.config({ path: envFile })
 
 console.log('from server: ', process.env.NODE_ENV)
 
@@ -9,7 +13,7 @@ const dev = process.env.NODE_ENV !== 'production'
 
 console.log('isDev: ', dev)
 
-const app = next({ dev: false })
+const app = next({ dev })
 const handle = app.getRequestHandler()
 
 // Store connected clients by pageId
