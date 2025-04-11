@@ -6,7 +6,7 @@ A bunch of tools that were helpful for very specific situations at a small - mid
 ## Tools
 - [Mock Pages](#) - A Figma for non-technical folk with a focus on visualising different user group's experience on mostly static sites.
 - [Quests](#) - A super light-weight triaging system with built in AI tooling to help stakeholders and project managers.
-- [Google Search Console Aggregator] - A simple dashboard to visualise Search Console data across multiple properties in 1 location
+- [Google Search Console Aggregator](#) - A simple dashboard to visualise Search Console data across multiple properties in 1 location
 
 
 ### Mock Pages
