@@ -1,0 +1,211 @@
+/* Google Search Console Page Styles */
+
+.gsc-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  font-family:
+    -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans',
+    'Helvetica Neue', sans-serif;
+}
+
+.gsc-header {
+  margin-bottom: 30px;
+}
+
+.gsc-header h1 {
+  font-size: 28px;
+  margin-bottom: 10px;
+}
+
+.gsc-header p {
+  color: #666;
+  font-size: 16px;
+}
+
+.gsc-properties {
+  margin-bottom: 30px;
+}
+
+.gsc-properties-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.gsc-property-item {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  border: 1px solid #ddd;
+  margin-bottom: 10px;
+  border-radius: 4px;
+}
+
+.gsc-property-url {
+  flex-grow: 1;
+  margin-right: 10px;
+}
+
+.gsc-property-remove {
+  background: #f44336;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 5px 10px;
+  cursor: pointer;
+}
+
+.gsc-add-property {
+  display: flex;
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+.gsc-add-property input {
+  flex-grow: 1;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  margin-right: 10px;
+}
+
+.gsc-add-property button {
+  background: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 10px 15px;
+  cursor: pointer;
+}
+
+.gsc-date-range {
+  margin-bottom: 20px;
+  padding: 15px;
+  background: #f5f5f5;
+  border-radius: 4px;
+}
+
+.gsc-date-range h3 {
+  margin-top: 0;
+  margin-bottom: 15px;
+}
+
+.gsc-date-inputs {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 10px;
+}
+
+.gsc-date-field {
+  flex: 1;
+}
+
+.gsc-date-field label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: 500;
+}
+
+.gsc-date-field input,
+.gsc-date-field select {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.gsc-fetch-button {
+  background: #2196f3;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 12px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  margin-bottom: 20px;
+}
+
+.gsc-fetch-button:disabled {
+  background: #cccccc;
+  cursor: not-allowed;
+}
+
+.gsc-results {
+  margin-top: 30px;
+}
+
+.gsc-results-header {
+  margin-bottom: 15px;
+}
+
+.gsc-results-content {
+  background: #f5f5f5;
+  padding: 20px;
+  border-radius: 4px;
+  overflow: auto;
+  max-height: 600px;
+}
+
+.gsc-results pre {
+  margin: 0;
+  white-space: pre-wrap;
+  font-family: monospace;
+}
+
+.gsc-results-tabs {
+  display: flex;
+  margin-bottom: 15px;
+  border-bottom: 1px solid #ddd;
+}
+
+.gsc-results-tab {
+  padding: 10px 15px;
+  cursor: pointer;
+  border: 1px solid transparent;
+  border-bottom: none;
+  margin-right: 5px;
+  border-top-left-radius: 4px;
+  border-top-right-radius: 4px;
+}
+
+.gsc-results-tab.active {
+  background: #f5f5f5;
+  border-color: #ddd;
+  margin-bottom: -1px;
+}
+
+.gsc-property-result {
+  margin-bottom: 20px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #ddd;
+}
+
+.gsc-property-result:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+.gsc-property-url {
+  font-weight: bold;
+  margin-bottom: 10px;
+  padding-bottom: 5px;
+  border-bottom: 1px solid #eee;
+  color: #2196f3;
+}
+
+.gsc-loading {
+  text-align: center;
+  padding: 20px;
+  font-style: italic;
+  color: #666;
+}
+
+.gsc-error {
+  background: #ffebee;
+  color: #d32f2f;
+  padding: 15px;
+  border-radius: 4px;
+  margin-bottom: 20px;
+}

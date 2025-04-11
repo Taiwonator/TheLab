@@ -46,3 +46,6 @@ next-env.d.ts
 
 # media files
 /media
+
+# Secrets
+google-credentials.json

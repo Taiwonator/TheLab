@@ -3,8 +3,13 @@ import { parse } from 'url'
 import next from 'next'
 import { Server } from 'socket.io'
 
+console.log('from server: ', process.env.NODE_ENV)
+
 const dev = process.env.NODE_ENV !== 'production'
-const app = next({ dev })
+
+console.log('isDev: ', dev)
+
+const app = next({ dev: false })
 const handle = app.getRequestHandler()
 
 // Store connected clients by pageId
