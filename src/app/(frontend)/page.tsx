@@ -3,6 +3,7 @@ import Image from 'next/image'
 import { getPayload } from 'payload'
 import React from 'react'
 import { fileURLToPath } from 'url'
+import Link from 'next/link'
 
 import config from '@/payload.config'
 import '@(frontend)/styles/mock-pages.css'
@@ -46,12 +47,18 @@ export default async function HomePage() {
           >
             Documentation
           </a> */}
-          <a className="docs" href="/mock-pages">
+          {/* <a className="docs" href="/mock-pages">
             Mock Pages ⭐
           </a>
           <a className="docs" href="/quests">
             Quests 🛡️
-          </a>
+          </a> */}
+          <Link className="docs" href="/mock-pages">
+            Mock Pages ⭐
+          </Link>
+          <Link className="docs" href="/quests">
+            Quests 🛡️
+          </Link>
         </div>
       </div>
       <div className="footer">

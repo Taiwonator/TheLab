@@ -28,7 +28,7 @@ ENV MONGODB_URI=$MONGODB_URI
 ENV PAYLOAD_SECRET=$PAYLOAD_SECRET
 ENV NEXT_PUBLIC_SOCKET_SERVER_URL=$NEXT_PUBLIC_SOCKET_SERVER_URL
 
-RUN npm run build
+RUN NODE_ENV=production npm run build
 
 # Production image, copy all the files and run next
 FROM base AS runner
