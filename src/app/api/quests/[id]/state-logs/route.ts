@@ -33,7 +33,7 @@ export async function GET(req: NextRequest, { params }: Params) {
           equals: id,
         },
       },
-      limit: 100000000, // Limit should be set by quests limit / pagination statergy
+      pagination: false, // Limit should be set by quests limit / pagination statergy
       sort: '-timestamp', // Sort by timestamp, newest first
     })
 

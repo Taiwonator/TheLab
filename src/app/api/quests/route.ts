@@ -1,6 +1,7 @@
-import { getPayload } from 'payload'
+import { getPayload, PaginatedDocs } from 'payload'
 import { NextRequest, NextResponse } from 'next/server'
 import config from '@/payload.config'
+import { Quest } from '@/payload-types'
 
 export async function GET(req: NextRequest) {
   try {
@@ -8,6 +9,7 @@ export async function GET(req: NextRequest) {
     const productId = searchParams.get('productId')
     const userId = searchParams.get('userId')
     const state = searchParams.get('state')
+    const page = searchParams.get('page')
 
     const payload = await getPayload({ config })
 
@@ -32,7 +34,11 @@ export async function GET(req: NextRequest) {
       where: query,
       depth: 1, // Populate first-level relationships
       sort: '-dateCreated', // Sort by creation date, newest first
+      ...(page && { page: Number(page) }),
     })
+
+    const questsMeta: Partial<PaginatedDocs<Quest>> = { ...quests }
+    delete questsMeta.docs
 
     // If state filter is applied, we need to fetch state logs and filter quests
     if (state) {
@@ -40,7 +46,7 @@ export async function GET(req: NextRequest) {
       const questIds = quests.docs.map((quest) => quest.id)
 
       if (questIds.length === 0) {
-        return NextResponse.json({ docs: [] })
+        return NextResponse.json({ docs: [], meta: questsMeta })
       }
 
       // Fetch the latest state log for each quest
@@ -51,7 +57,7 @@ export async function GET(req: NextRequest) {
             in: questIds,
           },
         },
-        limit: 100000000, // Limit should be set by quests limit / pagination statergy
+        pagination: false, // Limit should be set by quests limit / pagination statergy
         sort: '-timestamp', // Sort by timestamp, newest first
       })
 
@@ -78,13 +84,14 @@ export async function GET(req: NextRequest) {
 
       return NextResponse.json({
         docs: questsWithState,
+        meta: questsMeta,
       })
     } else {
       // If no state filter, still fetch the latest state for each quest
       const questIds = quests.docs.map((quest) => quest.id)
 
       if (questIds.length === 0) {
-        return NextResponse.json({ docs: [] })
+        return NextResponse.json({ docs: [], meta: questsMeta })
       }
 
       // Fetch the latest state log for each quest
@@ -95,7 +102,7 @@ export async function GET(req: NextRequest) {
             in: questIds,
           },
         },
-        limit: 100000000, // Limit should be set by quests limit / pagination statergy
+        pagination: false, // Limit should be set by quests limit / pagination statergy
         sort: '-timestamp', // Sort by timestamp, newest first
       })
 
@@ -116,6 +123,7 @@ export async function GET(req: NextRequest) {
 
       return NextResponse.json({
         docs: questsWithState,
+        meta: questsMeta,
       })
     }
   } catch (error) {

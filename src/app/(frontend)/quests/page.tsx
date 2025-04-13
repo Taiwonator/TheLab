@@ -18,10 +18,21 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/app/(frontend)/_components/ui/select'
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationButton,
+  PaginationNext,
+  PaginationPrevious,
+} from '@/app/(frontend)/_components/ui/pagination'
 import { Badge } from '@/app/(frontend)/_components/ui/badge'
 import { Spinner } from '@/app/(frontend)/_components/ui/spinner'
 // import { ShareButton } from '@(frontend)/components/ui/share-button'
 import { Quest, QuestProduct, QuestUser } from '@/payload-types'
+import { PaginatedDocs } from 'payload'
 
 interface QuestWithState extends Quest {
   latestState?: string
@@ -31,6 +42,7 @@ function QuestsList() {
   const searchParams = useSearchParams()
   const router = useRouter()
   const [quests, setQuests] = useState<QuestWithState[]>([])
+  const [questsMeta, setQuestsMeta] = useState<Partial<PaginatedDocs<Quest>>>({})
   const [products, setProducts] = useState<QuestProduct[]>([])
   const [users, setUsers] = useState<QuestUser[]>([])
   const [isLoading, setIsLoading] = useState(true)
@@ -40,6 +52,7 @@ function QuestsList() {
   const productId = searchParams.get('productId')
   const userId = searchParams.get('userId')
   const state = searchParams.get('state')
+  const page = searchParams.get('page')
 
   // Fetch products and users for filter dropdowns
   useEffect(() => {
@@ -79,6 +92,7 @@ function QuestsList() {
         if (productId) queryParams.append('productId', productId)
         if (userId) queryParams.append('userId', userId)
         if (state) queryParams.append('state', state)
+        if (page) queryParams.append('page', page)
 
         const response = await fetch(`/api/quests?${queryParams.toString()}`)
 
@@ -87,7 +101,10 @@ function QuestsList() {
         }
 
         const data = await response.json()
+        console.log('quests meta: ', data.meta)
+
         setQuests(data.docs)
+        setQuestsMeta(data.meta)
         setError(null)
       } catch (err) {
         console.error('Error fetching quests:', err)
@@ -138,21 +155,6 @@ function QuestsList() {
         return 'bg-background text-foreground border-1 border-foreground'
     }
   }
-
-  // if (!productId || !userId || !state) {
-  //   console.log('Invalid query parameters. Please use the filters to select valid options.', {
-  //     productId,
-  //     userId,
-  //     state,
-  //   })
-  //   return (
-  //     <div className="container mx-auto py-10">
-  //       <p>Invalid query parameters. Please use the filters to select valid options.</p>
-  //     </div>
-  //   )
-  // }
-
-  console.log('quest: ', quests)
 
   return (
     <div className="container mx-auto py-10">
@@ -335,6 +337,35 @@ function QuestsList() {
                   {/* </Link> */}
                 </div>
               ))}
+              {questsMeta && questsMeta.totalPages && questsMeta.totalPages > 1 && (
+                <Pagination>
+                  <PaginationContent>
+                    {questsMeta.prevPage && (
+                      <PaginationItem>
+                        <PaginationPrevious href="#" />
+                      </PaginationItem>
+                    )}
+                    {Array(Math.min(8, questsMeta.totalPages))
+                      .fill(0)
+                      .map((_, i) => (
+                        <PaginationItem key={`pagination-btn-${i}`}>
+                          <PaginationButton onClick={() => updateFilter('page', String(i + 1))}>
+                            {i + 1}
+                          </PaginationButton>
+                        </PaginationItem>
+                      ))}
+
+                    {/* <PaginationItem>
+                    <PaginationEllipsis />
+                  </PaginationItem> */}
+                    {questsMeta.nextPage && (
+                      <PaginationItem>
+                        <PaginationNext href="#" />
+                      </PaginationItem>
+                    )}
+                  </PaginationContent>
+                </Pagination>
+              )}
             </div>
           )}
         </>
