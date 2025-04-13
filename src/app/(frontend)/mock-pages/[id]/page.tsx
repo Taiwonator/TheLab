@@ -4,9 +4,9 @@ import React from 'react'
 
 import config from '@/payload.config'
 import { MockPage } from '@/payload-types'
-import MockPageBlocksClient from '../../components/MockPageBlocksClient'
-import MockPageNameEditor from '../../components/MockPageNameEditor'
-import MagicLinkGenerator from '../../components/MagicLinkGenerator'
+import MockPageBlocksClient from '../components/MockPageBlocksClient'
+import MockPageNameEditor from '../components/MockPageNameEditor'
+import MagicLinkGenerator from '../components/MagicLinkGenerator'
 
 export type PageProps = {
   params: Promise<{ id: string }>

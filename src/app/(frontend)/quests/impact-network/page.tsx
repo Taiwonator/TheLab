@@ -1,6 +1,6 @@
 'use client'
 
-import { Card, CardContent, CardHeader, CardTitle } from '@(frontend)/components/ui/card'
+import { Card, CardContent, CardHeader, CardTitle } from '@/app/(frontend)/_components/ui/card'
 
 export default function ImpactNetworkPage() {
   return (

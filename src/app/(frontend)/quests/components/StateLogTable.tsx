@@ -7,8 +7,8 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@(frontend)/components/ui/table'
-import { Badge } from '@(frontend)/components/ui/badge'
+} from '@/app/(frontend)/_components/ui/table'
+import { Badge } from '@/app/(frontend)/_components/ui/badge'
 
 interface StateLog {
   id: string
@@ -41,7 +41,7 @@ export function StateLogTable({ logs }: StateLogTableProps) {
       case 'denied':
         return 'bg-red-100 text-red-800'
       default:
-        return 'bg-gray-100 text-gray-800'
+        return 'bg-gray-100 text-foreground/80'
     }
   }
 
@@ -71,22 +71,20 @@ export function StateLogTable({ logs }: StateLogTableProps) {
           {sortedLogs.length > 0 ? (
             sortedLogs.map((log) => (
               <TableRow key={log.id}>
-                <TableCell className="font-medium">
-                  {formatDate(log.timestamp)}
-                </TableCell>
+                <TableCell className="font-medium">{formatDate(log.timestamp)}</TableCell>
                 <TableCell>
                   <Badge className={getStateBadgeColor(log.state)}>
                     {log.state.charAt(0).toUpperCase() + log.state.slice(1)}
                   </Badge>
                 </TableCell>
                 <TableCell className="max-w-md">
-                  {log.notes || <span className="text-gray-400">No notes</span>}
+                  {log.notes || <span className="text-foreground/40">No notes</span>}
                 </TableCell>
               </TableRow>
             ))
           ) : (
             <TableRow>
-              <TableCell colSpan={3} className="text-center py-4 text-gray-500">
+              <TableCell colSpan={3} className="text-center py-4 text-foreground/50">
                 No state logs found
               </TableCell>
             </TableRow>

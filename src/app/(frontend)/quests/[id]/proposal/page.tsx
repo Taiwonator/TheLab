@@ -2,7 +2,7 @@
 
 import { useEffect, useState, Suspense } from 'react'
 import { useParams, useRouter } from 'next/navigation'
-import { Button } from '@(frontend)/components/ui/button'
+import { Button } from '@/app/(frontend)/_components/ui/button'
 import {
   Card,
   CardContent,
@@ -10,10 +10,10 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from '@(frontend)/components/ui/card'
-import { Textarea } from '@(frontend)/components/ui/textarea'
-import { Badge } from '@(frontend)/components/ui/badge'
-import { Spinner } from '@(frontend)/components/ui/spinner'
+} from '@/app/(frontend)/_components/ui/card'
+import { Textarea } from '@/app/(frontend)/_components/ui/textarea'
+import { Badge } from '@/app/(frontend)/_components/ui/badge'
+import { Spinner } from '@/app/(frontend)/_components/ui/spinner'
 // import { ShareButton } from '@(frontend)/components/ui/share-button'
 import { UpdateStateModal } from '../../components/UpdateStateModal'
 import { StateLogTable } from '../../components/StateLogTable'
@@ -243,7 +243,7 @@ function QuestProposal() {
       case 'denied':
         return 'bg-red-100 text-red-800'
       default:
-        return 'bg-gray-100 text-gray-800'
+        return 'bg-gray-100 text-foreground/80'
     }
   }
 
@@ -252,7 +252,7 @@ function QuestProposal() {
       <div className="container mx-auto py-10 flex items-center justify-center min-h-screen">
         <div className="flex flex-col items-center">
           <Spinner size="lg" />
-          <span className="mt-4 text-lg text-gray-600">Loading quest details...</span>
+          <span className="mt-4 text-lg text-foreground/60">Loading quest details...</span>
         </div>
       </div>
     )
@@ -321,8 +321,8 @@ function QuestProposal() {
           <div className="space-y-4">
             <div>
               <h3 className="text-lg font-medium mb-2">Quest Overview</h3>
-              <div className="p-4 bg-gray-50 rounded-md">
-                <p className="text-gray-700">{quest?.overview}</p>
+              <div className="p-4 bg-foreground/5 rounded-md">
+                <p className="text-foreground">{quest?.overview}</p>
               </div>
             </div>
 

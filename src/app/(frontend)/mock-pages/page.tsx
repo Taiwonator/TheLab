@@ -1,9 +1,9 @@
 import { getPayload } from 'payload'
 import React from 'react'
-
+import Link from 'next/link'
 import config from '@/payload.config'
-import MockPagesClient from '../components/MockPagesClient'
-import MockPageUserFormWrapper from '../components/MockPageUserFormWrapper'
+import MockPagesClient from './components/MockPagesClient'
+import MockPageUserFormWrapper from './components/MockPageUserFormWrapper'
 import { MockPage, MockPageUser } from '@/payload-types'
 
 export default async function MockPagesPage() {
@@ -50,7 +50,7 @@ export default async function MockPagesPage() {
       </div>
 
       <div className="back-link">
-        <a href="/">Back to Home</a>
+        <Link href="/">Back to Home</Link>
       </div>
     </div>
   )

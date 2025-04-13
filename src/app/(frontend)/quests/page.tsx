@@ -3,23 +3,23 @@
 import { useEffect, useState, Suspense } from 'react'
 import { useSearchParams, useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { Button } from '@(frontend)/components/ui/button'
+import { Button } from '@/app/(frontend)/_components/ui/button'
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from '@(frontend)/components/ui/card'
+} from '@/app/(frontend)/_components/ui/card'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@(frontend)/components/ui/select'
-import { Badge } from '@(frontend)/components/ui/badge'
-import { Spinner } from '@(frontend)/components/ui/spinner'
+} from '@/app/(frontend)/_components/ui/select'
+import { Badge } from '@/app/(frontend)/_components/ui/badge'
+import { Spinner } from '@/app/(frontend)/_components/ui/spinner'
 // import { ShareButton } from '@(frontend)/components/ui/share-button'
 import { Quest, QuestProduct, QuestUser } from '@/payload-types'
 
@@ -113,6 +113,14 @@ function QuestsList() {
     router.push(`/quests?${params.toString()}`)
   }
 
+  const isFilterButtonDisabled = () => {
+    const params = new URLSearchParams(searchParams.toString())
+    if (params) return !params.size
+    return false
+  }
+
+  isFilterButtonDisabled()
+
   // Get state badge color
   const getStateBadgeColor = (state: string) => {
     switch (state) {
@@ -127,7 +135,7 @@ function QuestsList() {
       case 'denied':
         return 'bg-red-100 text-red-800'
       default:
-        return 'bg-gray-100 text-gray-800'
+        return 'bg-background text-foreground border-1 border-foreground'
     }
   }
 
@@ -144,6 +152,8 @@ function QuestsList() {
   //   )
   // }
 
+  console.log('quest: ', quests)
+
   return (
     <div className="container mx-auto py-10">
       <div className="flex justify-between items-center mb-6">
@@ -159,63 +169,72 @@ function QuestsList() {
           <CardDescription>Filter quests by product, user, or state</CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div>
-              <label className="block text-sm font-medium mb-1">Product</label>
-              <Select
-                value={productId || ''}
-                onValueChange={(value) => updateFilter('productId', value === '' ? null : value)}
-              >
-                <SelectTrigger className="w-full">
-                  <SelectValue placeholder="All Products" />
-                </SelectTrigger>
-                <SelectContent>
-                  {products.map((product) => (
-                    <SelectItem key={product.id} value={product.id}>
-                      {product.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
+          <div className="grid grid-cols-1 md:grid-cols-8 gap-4">
+            <div className="grid md:grid-cols-3 gap-4 md:col-span-7">
+              <div>
+                <label className="block text-sm font-medium mb-1">Product</label>
+                <Select
+                  value={productId || ''}
+                  onValueChange={(value) => updateFilter('productId', value === '' ? null : value)}
+                >
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="All Products" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {products.map((product) => (
+                      <SelectItem key={product.id} value={product.id}>
+                        {product.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
 
-            <div>
-              <label className="block text-sm font-medium mb-1">User</label>
-              <Select
-                value={userId || ''}
-                onValueChange={(value) => updateFilter('userId', value === '' ? null : value)}
-              >
-                <SelectTrigger className="w-full">
-                  <SelectValue placeholder="All Users" />
-                </SelectTrigger>
-                <SelectContent>
-                  {users.map((user) => (
-                    <SelectItem key={user.id} value={user.id}>
-                      {user.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
+              <div>
+                <label className="block text-sm font-medium mb-1">User</label>
+                <Select
+                  value={userId || ''}
+                  onValueChange={(value) => updateFilter('userId', value === '' ? null : value)}
+                >
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="All Users" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {users.map((user) => (
+                      <SelectItem key={user.id} value={user.id}>
+                        {user.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
 
-            <div>
-              <label className="block text-sm font-medium mb-1">State</label>
-              <Select
-                value={state || ''}
-                onValueChange={(value) => updateFilter('state', value === '' ? null : value)}
-              >
-                <SelectTrigger className="w-full">
-                  <SelectValue placeholder="All States" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="created">Created</SelectItem>
-                  <SelectItem value="proposing">Proposing</SelectItem>
-                  <SelectItem value="reviewing">Reviewing</SelectItem>
-                  <SelectItem value="approved">Approved</SelectItem>
-                  <SelectItem value="denied">Denied</SelectItem>
-                </SelectContent>
-              </Select>
+              <div>
+                <label className="block text-sm font-medium mb-1">State</label>
+                <Select
+                  value={state || ''}
+                  onValueChange={(value) => updateFilter('state', value === '' ? null : value)}
+                >
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="All States" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="created">Created</SelectItem>
+                    <SelectItem value="proposing">Proposing</SelectItem>
+                    <SelectItem value="reviewing">Reviewing</SelectItem>
+                    <SelectItem value="approved">Approved</SelectItem>
+                    <SelectItem value="denied">Denied</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
+            <Button
+              className="text-sm mt-auto md:col-span-1"
+              onClick={() => router.push('/quests')}
+              disabled={isFilterButtonDisabled()}
+            >
+              Clear
+            </Button>
           </div>
         </CardContent>
       </Card>
@@ -229,12 +248,12 @@ function QuestsList() {
       {isLoading ? (
         <div className="flex justify-center items-center py-20">
           <Spinner size="lg" />
-          <span className="ml-3 text-lg text-gray-600">Loading quests...</span>
+          <span className="ml-3 text-lg text-foreground/50">Loading quests...</span>
         </div>
       ) : (
         <>
           {/* Results count */}
-          <p className="text-sm text-gray-500 mb-4">
+          <p className="text-sm text-foreground/50 mb-4">
             Showing {quests.length} {quests.length === 1 ? 'quest' : 'quests'}
           </p>
 
@@ -242,7 +261,7 @@ function QuestsList() {
           {quests.length === 0 ? (
             <Card>
               <CardContent className="py-10 text-center">
-                <p className="text-gray-500">No quests found matching the selected filters.</p>
+                <p className="text-foreground/50">No quests found matching the selected filters.</p>
                 <Button variant="outline" className="mt-4" onClick={() => router.push('/quests')}>
                   Clear Filters
                 </Button>
@@ -253,8 +272,8 @@ function QuestsList() {
               {quests.map((quest) => (
                 <div key={quest.id} className="mb-4">
                   {/* <Link href={`/quests/${quest.id}`} className="block"> */}
-                  <Card className="relative overflow-hidden transition-colors hover:bg-[#F9F5FF] cursor-pointer">
-                    <CardContent className="p-0">
+                  <Card className="relative overflow-hidden transition-colors cursor-pointer hover:outline-figma-purple hover:outline-1 ">
+                    <CardContent className="p-0 relative">
                       <div className="p-6">
                         <div className="flex justify-between items-start mb-2">
                           <div className="text-xl font-medium">
@@ -270,7 +289,7 @@ function QuestsList() {
                           )}
                         </div>
 
-                        <div className="flex flex-wrap gap-2 text-sm text-gray-500">
+                        <div className="flex flex-wrap gap-2 text-sm text-foreground/50">
                           <div>
                             Product:{' '}
                             {typeof quest.productId === 'object' ? quest.productId.name : 'Unknown'}
@@ -293,21 +312,25 @@ function QuestsList() {
                             className="mt-4 flex justify-end"
                             onClick={(e) => e.stopPropagation()}
                           >
-                            <Link href={`/quests/${quest.id}/proposal`}>
-                              <Button
-                                size="sm"
-                                variant="outline"
-                                className="flex items-center gap-1"
-                              >
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              className="flex z-[2] items-center gap-1 hover:bg-figma-purple hover:text-white focus:bg-figma-purple focus:text-white"
+                              asChild
+                            >
+                              <Link href={`/quests/${quest.id}/proposal`}>
                                 {quest.proposal ? 'Edit Proposal' : 'Write Proposal'}{' '}
                                 <span>✏️</span>
-                              </Button>
-                            </Link>
+                              </Link>
+                            </Button>
                           </div>
                         )}
                       </div>
                     </CardContent>
-                    <Link href={`/quests/${quest.id}`} className="absolute w-full h-full" />
+                    <Link
+                      href={`/quests/${quest.id}`}
+                      className="absolute w-full h-full top-0 left-0 rounded-lg focus:border-figma-purple focus:border-2"
+                    />
                   </Card>
                   {/* </Link> */}
                 </div>

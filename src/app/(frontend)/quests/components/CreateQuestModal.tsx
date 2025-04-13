@@ -9,16 +9,16 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from '@(frontend)/components/ui/dialog'
-import { Button } from '@(frontend)/components/ui/button'
-import { Label } from '@(frontend)/components/ui/label'
+} from '@/app/(frontend)/_components/ui/dialog'
+import { Button } from '@/app/(frontend)/_components/ui/button'
+import { Label } from '@/app/(frontend)/_components/ui/label'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@(frontend)/components/ui/select'
+} from '@/app/(frontend)/_components/ui/select'
 import { QuestProduct, QuestUser } from '@/payload-types'
 
 interface CreateQuestModalProps {

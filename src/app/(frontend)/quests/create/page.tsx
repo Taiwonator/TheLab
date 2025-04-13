@@ -2,10 +2,10 @@
 
 import { useEffect, useState, Suspense } from 'react'
 import { useSearchParams, useRouter } from 'next/navigation'
-import { Button } from '@(frontend)/components/ui/button'
-import { Input } from '@(frontend)/components/ui/input'
-import { Spinner } from '@(frontend)/components/ui/spinner'
-import { Label } from '@(frontend)/components/ui/label'
+import { Button } from '@/app/(frontend)/_components/ui/button'
+import { Input } from '@/app/(frontend)/_components/ui/input'
+import { Spinner } from '@/app/(frontend)/_components/ui/spinner'
+import { Label } from '@/app/(frontend)/_components/ui/label'
 import {
   Card,
   CardContent,
@@ -13,7 +13,7 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from '@(frontend)/components/ui/card'
+} from '@/app/(frontend)/_components/ui/card'
 import { QuestProduct } from '@/payload-types'
 import { CreateQuestModal } from '../components/CreateQuestModal'
 
@@ -247,7 +247,7 @@ function CreateQuest() {
               accept="image/jpeg,image/png,image/gif,image/webp,application/pdf"
               className="cursor-pointer"
             />
-            <p className="text-xs text-gray-500 mt-1">
+            <p className="text-xs text-foreground/50 mt-1">
               Supported formats: JPEG, PNG, GIF, WebP, PDF
             </p>
           </div>

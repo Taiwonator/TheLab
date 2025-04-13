@@ -4,7 +4,7 @@ import React from 'react'
 
 import config from '@/payload.config'
 import { MockPage } from '@/payload-types'
-import MockPagePlayground from '../../../components/MockPagePlayground'
+import MockPagePlayground from '../../components/MockPagePlayground'
 
 export type PageProps = {
   params: Promise<{ id: string }>

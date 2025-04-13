@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import '../../styles/google-search-console.css'
+import '../../_styles/google-search-console.css'
 import {
   fetchMultiplePropertiesData,
   getDefaultQuery,

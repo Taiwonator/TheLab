@@ -1,8 +1,9 @@
 'use client'
 
 import { Reorder } from 'motion/react'
-import React, { useEffect, useState, Fragment, useRef, useCallback } from 'react'
-import { useSocket } from '../hooks/useSocket'
+import Link from 'next/link'
+import React, { useEffect, useState, Fragment, useCallback } from 'react'
+import { useSocket } from '../../_hooks/useSocket'
 import BlockForm from './BlockForm'
 import BlockEditForm from './BlockEditForm'
 import DeleteConfirmationModal from './DeleteConfirmationModal'
@@ -498,9 +499,9 @@ const MockPagePlayground: React.FC<MockPagePlaygroundProps> = ({
                 <ConnectedUsers count={roomUsers} users={users} />
               </div>
               <div className="page-title">
-                <a href="/mock-pages" className="back-arrow">
+                <Link href="/mock-pages" className="back-arrow">
                   ←
-                </a>
+                </Link>
                 <h1>{pageName}</h1>
               </div>
             </div>

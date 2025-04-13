@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { Button } from './button'
-import { cn } from '@(frontend)/lib/utils'
+import { cn } from '@/app/(frontend)/_lib/utils'
 
 interface ShareButtonProps {
   className?: string

@@ -95,3 +95,10 @@ I wonder if Augment Code will bridge the gap between inexperienced & experienced
 ## Plugins
 
 1. User Registration (Simple, SAML, SSO)
+
+## Notes to self...
+
+1. Learn about Shadcn :tick
+2. Create component Library
+
+-

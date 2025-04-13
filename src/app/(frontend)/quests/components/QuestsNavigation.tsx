@@ -2,8 +2,8 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { cn } from '@(frontend)/lib/utils'
-import { ShareButton } from '@(frontend)/components/ui/share-button'
+import { cn } from '@/app/(frontend)/_lib/utils'
+import { ShareButton } from '@/app/(frontend)/_components/ui/share-button'
 
 const navItems = [
   { href: '/quests/create', label: 'Create' },
@@ -39,7 +39,7 @@ export function QuestsNavigation() {
           )
         })}
         <li className="relative">
-          <ShareButton className="bg-figma-purple text-white hover:bg-figma-purple-light" />
+          <ShareButton className="!bg-figma-purple text-white hover:!bg-figma-purple-light" />
         </li>
       </ul>
     </nav>

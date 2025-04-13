@@ -1,6 +1,6 @@
 'use client'
 
-import { cn } from '@(frontend)/lib/utils'
+import { cn } from '@/app/(frontend)/_lib/utils'
 
 interface SpinnerProps {
   className?: string

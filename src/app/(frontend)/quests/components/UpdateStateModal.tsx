@@ -8,17 +8,17 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from '@(frontend)/components/ui/dialog'
-import { Button } from '@(frontend)/components/ui/button'
-import { Textarea } from '@(frontend)/components/ui/textarea'
+} from '@/app/(frontend)/_components/ui/dialog'
+import { Button } from '@/app/(frontend)/_components/ui/button'
+import { Textarea } from '@/app/(frontend)/_components/ui/textarea'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@(frontend)/components/ui/select'
-import { Label } from '@(frontend)/components/ui/label'
+} from '@/app/(frontend)/_components/ui/select'
+import { Label } from '@/app/(frontend)/_components/ui/label'
 
 interface UpdateStateModalProps {
   open: boolean
@@ -124,15 +124,11 @@ export function UpdateStateModal({
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>Update Quest State</DialogTitle>
-          <DialogDescription>
-            Change the state of this quest from {currentState}.
-          </DialogDescription>
+          <DialogDescription>Change the state of this quest from {currentState}.</DialogDescription>
         </DialogHeader>
 
         {error && (
-          <div className="bg-destructive/15 text-destructive p-3 rounded-md mb-4">
-            {error}
-          </div>
+          <div className="bg-destructive/15 text-destructive p-3 rounded-md mb-4">{error}</div>
         )}
 
         <div className="grid gap-4 py-4">
@@ -186,11 +182,7 @@ export function UpdateStateModal({
           <Button
             type="submit"
             onClick={handleSubmit}
-            disabled={
-              isLoading ||
-              !selectedState ||
-              (isNotesRequired && !notes.trim())
-            }
+            disabled={isLoading || !selectedState || (isNotesRequired && !notes.trim())}
           >
             {isLoading ? 'Updating...' : 'Update State'}
           </Button>

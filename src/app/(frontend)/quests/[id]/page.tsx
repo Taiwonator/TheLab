@@ -2,7 +2,7 @@
 
 import { useEffect, useState, Suspense } from 'react'
 import { useParams, useRouter } from 'next/navigation'
-import { Button } from '@(frontend)/components/ui/button'
+import { Button } from '@/app/(frontend)/_components/ui/button'
 import {
   Card,
   CardContent,
@@ -10,12 +10,12 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from '@(frontend)/components/ui/card'
-import { Input } from '@(frontend)/components/ui/input'
-import { Textarea } from '@(frontend)/components/ui/textarea'
-import { Badge } from '@(frontend)/components/ui/badge'
-import { Spinner } from '@(frontend)/components/ui/spinner'
-import { ShareButton } from '@(frontend)/components/ui/share-button'
+} from '@/app/(frontend)/_components/ui/card'
+import { Input } from '@/app/(frontend)/_components/ui/input'
+import { Textarea } from '@/app/(frontend)/_components/ui/textarea'
+import { Badge } from '@/app/(frontend)/_components/ui/badge'
+import { Spinner } from '@/app/(frontend)/_components/ui/spinner'
+import { ShareButton } from '@/app/(frontend)/_components/ui/share-button'
 import { Quest } from '@/payload-types'
 import { UpdateStateModal } from '../components/UpdateStateModal'
 import { StateLogTable } from '../components/StateLogTable'
@@ -156,7 +156,7 @@ function QuestDetail() {
       <div className="container mx-auto py-10 flex items-center justify-center min-h-screen">
         <div className="flex flex-col items-center">
           <Spinner size="lg" />
-          <span className="mt-4 text-md text-gray-600">Loading quest details...</span>
+          <span className="mt-4 text-md text-foreground/50">Loading quest details...</span>
         </div>
       </div>
     )
@@ -192,7 +192,7 @@ function QuestDetail() {
       case 'denied':
         return 'bg-red-100 text-red-800'
       default:
-        return 'bg-gray-100 text-gray-800'
+        return 'bg-gray-100 text-foreground/80'
     }
   }
 
@@ -262,7 +262,7 @@ function QuestDetail() {
                   </div>
                 </div>
               ) : (
-                <p className="text-gray-700">{quest.overview}</p>
+                <p className="text-foreground/70">{quest.overview}</p>
               )}
             </div>
 
@@ -295,7 +295,7 @@ function QuestDetail() {
                               : 'bg-gray-50'
                       }`}
                     >
-                      <p className="text-gray-700">{quest.proposal}</p>
+                      <p className="text-foreground/70">{quest.proposal}</p>
                       {quest.latestState === 'reviewing' && (
                         <div className="mt-2 text-xs text-purple-600 flex items-center">
                           <svg
@@ -373,36 +373,36 @@ function QuestDetail() {
 
             <div>
               <h3 className="text-lg font-medium">Product</h3>
-              <p className="text-gray-700">
+              <p className="text-foreground/70">
                 {typeof quest.productId === 'object' ? quest.productId.name : 'Loading...'}
               </p>
             </div>
 
             <div>
               <h3 className="text-lg font-medium">User</h3>
-              <p className="text-gray-700">
+              <p className="text-foreground/70">
                 {typeof quest.userId === 'object' ? quest.userId.name : 'Loading...'}
               </p>
             </div>
 
             <div>
               <h3 className="text-lg font-medium">AI Labels</h3>
-              <div className="grid grid-cols-2 gap-2">
+              <div className="grid grid-cols-2 gap-4">
                 <div>
                   <p className="text-sm font-medium">Source</p>
-                  <p className="text-gray-700">{quest.AILabels?.source || 'None'}</p>
+                  <p className="text-foreground/70">{quest.AILabels?.source || 'None'}</p>
                 </div>
                 <div>
                   <p className="text-sm font-medium">Type</p>
-                  <p className="text-gray-700">{quest.AILabels?.type || 'None'}</p>
+                  <p className="text-foreground/70">{quest.AILabels?.type || 'None'}</p>
                 </div>
                 <div>
                   <p className="text-sm font-medium">System</p>
-                  <p className="text-gray-700">{quest.AILabels?.system || 'None'}</p>
+                  <p className="text-foreground/70">{quest.AILabels?.system || 'None'}</p>
                 </div>
                 <div>
                   <p className="text-sm font-medium">Outcome</p>
-                  <p className="text-gray-700">{quest.AILabels?.outcome || 'None'}</p>
+                  <p className="text-foreground/70">{quest.AILabels?.outcome || 'None'}</p>
                 </div>
               </div>
             </div>
@@ -430,7 +430,7 @@ function QuestDetail() {
                           <div className="aspect-square flex items-center justify-center bg-gray-100">
                             <div className="text-center p-4">
                               <svg
-                                className="w-12 h-12 mx-auto text-gray-400"
+                                className="w-12 h-12 mx-auto text-foreground/40"
                                 fill="currentColor"
                                 viewBox="0 0 20 20"
                               >
@@ -447,7 +447,7 @@ function QuestDetail() {
                           <div className="aspect-square flex items-center justify-center bg-gray-100">
                             <div className="text-center p-4">
                               <svg
-                                className="w-12 h-12 mx-auto text-gray-400"
+                                className="w-12 h-12 mx-auto text-foreground/40"
                                 fill="currentColor"
                                 viewBox="0 0 20 20"
                               >
@@ -483,7 +483,7 @@ function QuestDetail() {
           </div>
         </CardContent>
         <CardFooter className="flex justify-between">
-          <Button variant="outline" onClick={() => window.history.back()}>
+          <Button variant="outline" onClick={() => router.push('/quests')}>
             Back to Quests
           </Button>
         </CardFooter>
