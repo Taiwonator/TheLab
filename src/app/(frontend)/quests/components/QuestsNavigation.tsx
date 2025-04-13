@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { cn } from '@/app/(frontend)/_lib/utils'
 import { ShareButton } from '@/app/(frontend)/_components/ui/share-button'
+import { ThemeSelect } from '@(frontend)/_components/theme-select'
 
 const navItems = [
   { href: '/quests/create', label: 'Create' },
@@ -40,6 +41,9 @@ export function QuestsNavigation() {
         })}
         <li className="relative">
           <ShareButton className="!bg-figma-purple text-white hover:!bg-figma-purple-light" />
+        </li>
+        <li>
+          <ThemeSelect />
         </li>
       </ul>
     </nav>

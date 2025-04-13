@@ -315,7 +315,7 @@ function QuestsList() {
                             <Button
                               size="sm"
                               variant="outline"
-                              className="flex z-[2] items-center gap-1 hover:bg-figma-purple hover:text-white focus:bg-figma-purple focus:text-white"
+                              className="btn-figma--hover flex z-[2] items-center gap-1"
                               asChild
                             >
                               <Link href={`/quests/${quest.id}/proposal`}>

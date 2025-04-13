@@ -295,7 +295,7 @@ function QuestDetail() {
                               : 'bg-gray-50'
                       }`}
                     >
-                      <p className="text-foreground/70">{quest.proposal}</p>
+                      <p className="text-gray-700">{quest.proposal}</p>
                       {quest.latestState === 'reviewing' && (
                         <div className="mt-2 text-xs text-purple-600 flex items-center">
                           <svg

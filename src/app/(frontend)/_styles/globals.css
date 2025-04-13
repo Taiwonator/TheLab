@@ -137,3 +137,7 @@
     background-size: 20px 20px;
   }
 }
+
+@utility btn-figma--hover {
+  @apply hover:!text-white hover:!bg-figma-purple focus:!bg-figma-purple focus:!text-white;
+}
