@@ -12,7 +12,7 @@ export default function QuestsLayout({ children }: { children: React.ReactNode }
   return (
     <div className="min-h-screen bg-pokerdot">
       <header className="p-4">
-        <div className="container mx-auto py-2 px-4 flex justify-between items-center bg-background rounded-2xl shadow-sm">
+        <div className="container mx-auto py-2 px-4 flex justify-between items-center bg-background/25 rounded-2xl shadow-sm">
           <Link href="/quests" className="text-xl font-bold">
             Quests 🛡️
           </Link>
